@@ -260,7 +260,7 @@ services:
     command: ppp --mode=client --tun-static=yes --block-quic=no --set-http-proxy=yes
 # 定义网络
 networks:
-  openpppnetwork:
+  ${ppp_name}network:
     driver: bridge
     # enable_ipv6: true # 是否启用IPv6
     ipam:

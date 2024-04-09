@@ -216,9 +216,6 @@ generate_ppp_docker_compose() {
             # 用户选择编辑文件，使用 vim 打开文件
             vim "${ppp_docker}"
             echo -e "${green}" "${ppp_docker}配置文件编辑完成。${plain}"
-        else
-            echo -e "${yellow}" "跳过编辑${ppp_docker}配置文件。${plain}"
-            return # 如果用户选择不编辑，则返回。
         fi
     else
     echo -e "${green}" "已经按 ${mode} 模式生成 ${ppp_docker}配置文件。${plain}"   

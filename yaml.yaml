@@ -1,0 +1,7 @@
+proxies:
+  - { name: 'HK-vkvm', type: 'socks5', server: '127.0.0.1', port: 1080, username: 'admin', password: 'password' }
+  - { name: 'HK-hks', type: 'socks5', server: '127.0.0.1', port: 1081, username: 'admin', password: 'password' } 
+  - { name: 'HK-hksv2', type: 'socks5', server: '127.0.0.1', port: 1083, username: 'admin', password: 'password' } 
+  - { name: 'HK-bage', type: 'socks5', server: '127.0.0.1', port: 1082, username: 'admin', password: 'password' } 
+  - { name: 'HK-bage-v6', type: 'socks5', server: '127.0.0.1', port: 1085, username: 'admin', password: 'password' }
+  - { name: 'DE', type: 'socks5', server: '127.0.0.1', port: 1084, username: 'admin', password: 'password' } 

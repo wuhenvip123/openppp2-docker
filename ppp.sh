@@ -220,7 +220,7 @@ generate_ppp_docker_compose() {
             return # 退出函数，不再执行生成新配置的逻辑
         fi
     fi
-
+    echo -e "${green}" "已经按 ${mode} 模式生成 ${ppp_docker}配置文件。${plain}" 
     if [[ ${mode} == "server" ]]; then
     cat >"${ppp_docker}" <<EOF
 services:
@@ -267,7 +267,7 @@ networks:
         - subnet: 172.20.0.0/24
         # - subnet: 2001:db8:1::/64 # 定义IPv6子网
 EOF
-    echo -e "${green}" "已经按 ${mode} 模式生成 ${ppp_docker}配置文件。${plain}" 
+    
     fi
 }
 
@@ -286,10 +286,9 @@ create_or_modify_ppp_config() {
 
     # 如果配置文件不存在，则重新生成配置文件
     echo -e "${yellow}重新生成${ppp_config}。${plain}"
-    ip_info=$(curl -m 10 -s https://ipapi.co/json)
+    curl -m 10 -s ip.sb
     ip addr show eth0 | grep inet | awk '{print $2}' | cut -d/ -f1
-    echo -e "${ip_info}" | grep -q 'ip'
-    
+
     read -p "请输入VPS IP: " vps_ip
     read -p "请输入VPS 端口: " port
     # 设置内网IP的默认值并提示用户

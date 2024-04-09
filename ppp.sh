@@ -159,7 +159,6 @@ show_ppp_log() {
 
 uninstall_ppp() {
     echo -e ">> 卸载${ppp_name}"
-    docker_compose_action "down"
     if [[ -d "${ppp_path}" ]]; then
         rm -rf "${ppp_path}"
         echo -e "${ppp_path} 已删除。"

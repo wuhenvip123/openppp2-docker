@@ -216,9 +216,9 @@ generate_ppp_docker_compose() {
             # 用户选择编辑文件，使用 vim 打开文件
             vim "${ppp_docker}"
             echo -e "${green}" "${ppp_docker}配置文件编辑完成。${plain}"
+            restart_ppp_update  # 完成编辑后的操作，重启容器
+            return # 退出函数，不再执行生成新配置的逻辑
         fi
-    else
-    echo -e "${green}" "已经按 ${mode} 模式生成 ${ppp_docker}配置文件。${plain}"   
     if [[ ${mode} == "server" ]]; then
     cat >"${ppp_docker}" <<EOF
 services:
@@ -265,7 +265,8 @@ networks:
         - subnet: 172.20.0.0/24
         # - subnet: 2001:db8:1::/64 # 定义IPv6子网
 EOF
-    fi        
+    echo -e "${green}" "已经按 ${mode} 模式生成 ${ppp_docker}配置文件。${plain}"
+        fi        
     fi
 }
 
@@ -274,17 +275,15 @@ create_or_modify_ppp_config() {
     if [ -f "${ppp_config}" ]; then
         echo -e "${yellow}检测到已存在${ppp_config}配置文件。${plain}"
         read -p "是否要编辑现有的配置文件？[Y/n]: " edit_choice
-        
         if [[ $edit_choice =~ ^[Yy]$ ]]; then
             vim "${ppp_config}"
             echo -e "${green}${ppp_config}配置文件修改成功。${plain}"
             restart_ppp_update
             return
-        fi
-        
+        fi 
     fi
 
-    # 如果选择重新生成配置文件，或配置文件不存在
+    # 如果配置文件不存在，则重新生成配置文件
     echo -e "${yellow}重新生成${ppp_config}。${plain}"
     read -p "请输入VPS IP: " vps_ip
     read -p "请输入VPS 端口: " port

@@ -298,8 +298,10 @@ create_or_modify_ppp_config() {
     lan_ip=${lan_ip:-$default_lan_ip}
     # 设置随机uuid，避免多客户端时候冲突。
     random_guid=$(uuidgen)
-    concurrent=${nproc}+1
-    echo -e "${yellow}  ${vps_ip}:${port} 用户ID ${random_guid} 本机核心数 ${concurrent}-1。${plain}"
+    concurrent=$(($(nproc) + 1))
+
+    echo -e "${yellow} 节点 ${vps_ip}:${port} 用户ID ${random_guid} 线程数 ${concurrent} 。${plain}"
+    
     cat >"${ppp_config}" <<EOF
 {
     "concurrent": ${concurrent},

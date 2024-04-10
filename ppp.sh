@@ -296,11 +296,11 @@ create_or_modify_ppp_config() {
     default_lan_ip="::"
     read -p "请输入内网IP地址（默认为${default_lan_ip}，服务端保持默认值即可）: " lan_ip
     lan_ip=${lan_ip:-$default_lan_ip}
-    # 设置随机uuid，避免多客户端时候冲突。
+    # 设置线程数，随机uuid，避免多客户端时候冲突。
+    concurrent=$(nproc)
     random_guid=$(uuidgen)
-    concurrent=$(($(nproc) + 1))
-
-    echo -e "${yellow} 节点 ${vps_ip}:${port} 用户ID ${random_guid} 线程数 ${concurrent} 。${plain}"
+    
+    echo -e "${yellow} 节点 ${vps_ip}:${port} 线程数 ${concurrent} 用户ID ${random_guid} ${plain}"
     
     cat >"${ppp_config}" <<EOF
 {

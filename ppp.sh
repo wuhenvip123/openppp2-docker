@@ -10,7 +10,8 @@ green='\033[0;32m'
 yellow='\033[0;33m'
 plain='\033[0m'
 
-install_ppp() {pre_setup
+install_ppp() {
+pre_setup
 get_ip_info
 check_and_install_docker
 setup_directory_and_name
@@ -287,14 +288,16 @@ create_or_modify_ppp_config() {
     echo -e "${yellow}重新生成${ppp_config}。${plain}"
     curl -m 10 -s ip.sb
     ip addr show eth0 | grep inet | awk '{print $2}' | cut -d/ -f1
-
+    
     read -p "请输入VPS IP: " vps_ip
     read -p "请输入VPS 端口: " port
     # 设置内网IP的默认值并提示用户
     default_lan_ip="::"
     read -p "请输入内网IP地址（默认为${default_lan_ip}，服务端保持默认值即可）: " lan_ip
     lan_ip=${lan_ip:-$default_lan_ip}
+    
     random_guid=$(uuidgen)
+    
     cat >"${ppp_config}" <<EOF
 {
     "concurrent": 2,

@@ -298,7 +298,7 @@ create_or_modify_ppp_config() {
 
     cat >"${ppp_config}" <<EOF
 {
-    "concurrent": 1,
+    "concurrent": 2,
     "cdn": [2080, 2443],
     "key": {
         "kf": 154543927,

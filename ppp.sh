@@ -298,10 +298,11 @@ create_or_modify_ppp_config() {
     lan_ip=${lan_ip:-$default_lan_ip}
     # 设置随机uuid，避免多客户端时候冲突。
     random_guid=$(uuidgen)
-    
+    concurrent=${nproc}+1
+
     cat >"${ppp_config}" <<EOF
 {
-    "concurrent": 2,
+    "concurrent": ${concurrent},
     "cdn": [2080, 2443],
     "key": {
         "kf": 154543927,

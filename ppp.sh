@@ -10,8 +10,7 @@ green='\033[0;32m'
 yellow='\033[0;33m'
 plain='\033[0m'
 
-install_ppp() {
-pre_setup
+install_ppp() {pre_setup
 get_ip_info
 check_and_install_docker
 setup_directory_and_name
@@ -295,7 +294,7 @@ create_or_modify_ppp_config() {
     default_lan_ip="::"
     read -p "请输入内网IP地址（默认为${default_lan_ip}，服务端保持默认值即可）: " lan_ip
     lan_ip=${lan_ip:-$default_lan_ip}
-    random_guid = $(uuidgen)
+    random_guid=$(uuidgen)
     cat >"${ppp_config}" <<EOF
 {
     "concurrent": 2,

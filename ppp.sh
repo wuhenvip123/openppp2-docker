@@ -295,7 +295,7 @@ create_or_modify_ppp_config() {
     default_lan_ip="::"
     read -p "请输入内网IP地址（默认为${default_lan_ip}，服务端保持默认值即可）: " lan_ip
     lan_ip=${lan_ip:-$default_lan_ip}
-
+    random_guid = uuid.uuid4()
     cat >"${ppp_config}" <<EOF
 {
     "concurrent": 2,
@@ -395,7 +395,7 @@ create_or_modify_ppp_config() {
         "backend-key": "HaEkTB55VcHovKtUPHmU9zn0NjFmC6tff"
     },
     "client": {
-        "guid": "{F4569208-BB45-4DEB-B115-0FEA1D91B85B}",
+        "guid": "{${random_guid}}",
         "server": "ppp://${vps_ip}:${port}/",
         "bandwidth": 0,
         "reconnections": {

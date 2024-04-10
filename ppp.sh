@@ -37,7 +37,7 @@ pre_setup() {
         # 默认为Debian/Ubuntu系统
         echo -e "${yellow}" "正在安装必需的软件包...${plain}"
         apt-get update
-        apt-get install -y sudo curl vim
+        apt-get install -y sudo curl vim uuid-runtime
         echo -e "${green}" "所需软件安装完成。${plain}"
     fi
 }
@@ -295,7 +295,7 @@ create_or_modify_ppp_config() {
     default_lan_ip="::"
     read -p "请输入内网IP地址（默认为${default_lan_ip}，服务端保持默认值即可）: " lan_ip
     lan_ip=${lan_ip:-$default_lan_ip}
-    random_guid = uuid.uuid4()
+    random_guid = $(uuidgen)
     cat >"${ppp_config}" <<EOF
 {
     "concurrent": 2,

@@ -13,13 +13,13 @@ RUN git clone --depth=1 https://github.com/liulilittle/openppp2.git $THIRD_PARTY
     chmod +x ../bin/ppp
 
 # 准备最终镜像
-FROM ubuntu:latest
+FROM ubuntu:23.10
 
 # 复制构建好的应用到最终镜像
 COPY --from=builder /env/openppp2/bin /openppp2
 
 # 安装运行时依赖，并配置系统环境
-RUN apt-get update && apt-get install -y --no-install-recommends curl tzdata iptables iproute2 dnsutils iputils-ping && \
+RUN apt-get update && apt-get install -y --no-install-recommends curl dnsutils iptables iproute2 iputils-ping netperf tzdata && \
     ln -fs /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
     dpkg-reconfigure -f noninteractive tzdata && \
     rm -rf /var/lib/apt/lists/*

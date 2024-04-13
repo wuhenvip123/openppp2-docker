@@ -26,5 +26,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl dnsutils i
     chmod +x test.sh && \
     rm -rf /var/lib/apt/lists/*
 
-# 设置启动命令
-ENTRYPOINT ["/openppp2/ppp"]
+# 创建一个启动脚本，用于启动netperf和openppp2服务
+RUN echo '#!/bin/bash' > start.sh && \
+    echo 'netperf -l 3600 & # 后台启动netperf运行60分钟' >> start.sh && \
+    echo 'exec /openppp2/ppp' >> start.sh && \
+    chmod +x start.sh
+
+# 设置启动脚本为容器启动时运行的命令
+ENTRYPOINT ["/openppp2/start.sh"]

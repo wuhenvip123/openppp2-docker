@@ -163,8 +163,8 @@ uninstall_ppp() {
         rm -rf "${ppp_path}"
         echo -e "${ppp_path} 已删除。"
     fi
-    docker rm ${ppp_name} &>/dev/null
-    docker rmi $(docker images -q rebecca554owen/${ppp_name}) &>/dev/null || echo -e "Docker 镜像可能已被删除。"
+    docker rm -f ${ppp_name} &>/dev/null
+    docker rmi -f $(docker images -q rebecca554owen/${ppp_name}) &>/dev/null || echo -e "Docker 镜像可能已被删除。"
     echo -e "${ppp_name}已卸载。"
     before_show_menu
 }

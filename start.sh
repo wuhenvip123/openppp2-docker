@@ -63,7 +63,7 @@ RestartSec=10
 [Install]
 WantedBy=multi-user.target
 EOF
-
+    modify_config # 检测配置是否存在并编辑配置文件
     sudo systemctl enable ppp.service
     sudo systemctl daemon-reload
     sudo systemctl start ppp.service

@@ -77,6 +77,19 @@ function uninstall_ppp() {
     sudo systemctl daemon-reload
     sudo systemctl reset-failed
     echo "删除安装文件..."
+
+    # 获取PPP进程的PID
+    pids=$(pgrep ppp)
+    
+    # 检查是否有PID返回
+    if [ -z "$pids" ]; then
+        echo "没有找到PPP进程。"
+    else
+        echo "找到PPP进程，正在杀死..."
+        kill $pids
+        echo "已发送终止信号到PPP进程。"
+    fi
+
     sudo rm -rf $ppp_dir
     echo "PPP服务已完全卸载。"
 }

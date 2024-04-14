@@ -113,23 +113,20 @@ function view_ppp_session() {
 }
 
 function modify_config() {
-    echo "配置或修改PPP配置文件..."
-    ppp_config="$ppp_dir/appsettings.json"
-    if [[ -f "$ppp_config" ]]; then
-        echo "已存在配置文件：$ppp_config"
-        echo "是否要编辑现有的配置文件？ (y/n)"
-        read edit_choice
-        if [[ "$edit_choice" == "y" ]]; then
-            vim "$ppp_config"
-            echo "配置文件已修改。"
+    ppp_config="${ppp_dir}/appsettings.json"
+    if [ -f "${ppp_dir}" ]; then
+        echo -e "检测到已存在${ppp_config}配置文件。"
+        read -p "是否要编辑现有的配置文件？[Y/n]: " edit_choice
+        if [[ $edit_choice =~ ^[Yy]$ ]]; then
+            vim "${ppp_config}"
+            echo -e "${ppp_config}配置文件修改成功。"
             restart_ppp
-        else
-            echo "跳过修改。"
-            retun
-        fi
-    else
+            return
+        fi 
+    fi
+
     # 如果配置文件不存在，则重新生成配置文件
-    echo -e "${yellow}重新生成${ppp_config}。${plain}"
+    echo -e "重新生成${ppp_config}。"
     # 检测公网出口/内网IP来提示用户
     curl -m 10 -s ip.sb
     ip addr show eth0 | grep inet | awk '{print $2}' | cut -d/ -f1
@@ -144,7 +141,7 @@ function modify_config() {
     concurrent=$(nproc)
     random_guid=$(uuidgen)
     
-    echo -e "${yellow} 节点 ${vps_ip}:${port} 线程数 ${concurrent} 用户ID ${random_guid} ${plain}"
+    echo -e " 节点 ${vps_ip}:${port} 线程数 ${concurrent} 用户ID ${random_guid} "
     
     cat >"${ppp_config}" <<EOF
 {
@@ -277,8 +274,7 @@ function modify_config() {
     }
 }
 EOF
-        echo "新配置文件已创建。"
-    fi
+    echo -e "${ppp_config}配置文件生成成功。"
 }
 
 # 显示菜单并处理用户输入

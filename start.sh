@@ -43,7 +43,7 @@ function install_ppp() {
     fi
 
     echo "下载文件中..."
-    wget -O package.zip "$download_url" && echo "解压下载的文件..." && unzip -o package.zip -d $ppp_dir && rm package.zip
+    wget -O openppp2.zip "$download_url" && echo "解压下载的文件..." && unzip -o openppp2.zip -d $ppp_dir && rm openppp2.zip
     chmod +x $ppp_dir/ppp
 
     echo "配置系统服务..."
@@ -83,6 +83,8 @@ function uninstall_ppp() {
 }
 
 function start_ppp() {
+    sudo systemctl enable ppp.service
+    sudo systemctl daemon-reload
     sudo systemctl start ppp.service
     echo "PPP服务已启动。"
 }
@@ -93,6 +95,7 @@ function stop_ppp() {
 }
 
 function restart_ppp() {
+    sudo systemctl daemon-reload
     sudo systemctl restart ppp.service
     echo "PPP服务已重启。"
 }

@@ -48,21 +48,27 @@ function install_ppp() {
     unzip -o '*.zip' -x 'appsettings.json' && rm *.zip
     chmod +x ppp
 
-    # 选择模式
-    echo "请选择模式："
-    echo "1) 服务端"
-    echo "2) 客户端"
-    read -p "输入选择 (1 或 2): " mode_choice
+# 选择模式
+echo "请选择模式（默认为服务端）："
+echo "1) 服务端"
+echo "2) 客户端"
+read -p "输入选择 (1 或 2，默认为1): " mode_choice
 
-    if [[ "$mode_choice" == "1" ]]; then
-        exec_start="/usr/bin/screen -DmS ppp $ppp_dir/ppp --mode=server"
-    else
-        exec_start="/usr/bin/screen -DmS ppp $ppp_dir/ppp --mode=client --tun-static=yes --block-quic=no --set-http-proxy=yes"
-    fi
+# 设置默认选项
+mode_choice=${mode_choice:-1}
 
-    # 配置系统服务
-    echo "配置系统服务..."
-    cat > /etc/systemd/system/ppp.service << EOF
+# 根据选择设置ExecStart和Restart策略
+if [[ "$mode_choice" == "2" ]]; then
+    exec_start="/usr/bin/screen -DmS ppp $ppp_dir/ppp --mode=client --tun-static=yes --block-quic=no --set-http-proxy=yes"
+    restart_policy="no"
+else
+    exec_start="/usr/bin/screen -DmS ppp $ppp_dir/ppp --mode=server"
+    restart_policy="always"
+fi
+
+# 配置系统服务
+echo "配置系统服务..."
+cat > /etc/systemd/system/ppp.service << EOF
 [Unit]
 Description=PPP Service with Screen
 After=network.target
@@ -72,7 +78,7 @@ Type=simple
 User=root
 WorkingDirectory=$ppp_dir
 ExecStart=$exec_start
-Restart=always
+Restart=$restart_policy
 RestartSec=10
 
 [Install]

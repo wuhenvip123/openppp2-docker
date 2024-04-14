@@ -43,9 +43,24 @@ function install_ppp() {
     fi
 
     echo "下载文件中..."
-    wget -O openppp2.zip "$download_url" && echo "解压下载的文件..." && unzip -o openppp2.zip -d $ppp_dir && rm openppp2.zip
-    chmod +x $ppp_dir/ppp
+    wget "$download_url"
+    echo "解压下载的文件..."
+    unzip -o '*.zip' -x 'appsettings.json' && rm *.zip
+    chmod +x ppp
 
+    # 选择模式
+    echo "请选择模式："
+    echo "1) 服务端"
+    echo "2) 客户端"
+    read -p "输入选择 (1 或 2): " mode_choice
+
+    if [[ "$mode_choice" == "1" ]]; then
+        exec_start="/usr/bin/screen -DmS ppp $ppp_dir/ppp --mode=server"
+    else
+        exec_start="/usr/bin/screen -DmS ppp $ppp_dir/ppp --mode=client --tun-static=yes --block-quic=no --set-http-proxy=yes"
+    fi
+
+    # 配置系统服务
     echo "配置系统服务..."
     cat > /etc/systemd/system/ppp.service << EOF
 [Unit]
@@ -56,13 +71,14 @@ After=network.target
 Type=simple
 User=root
 WorkingDirectory=$ppp_dir
-ExecStart=/usr/bin/screen -DmS ppp $ppp_dir/ppp -m -s
+ExecStart=$exec_start
 Restart=always
 RestartSec=10
 
 [Install]
 WantedBy=multi-user.target
 EOF
+
     modify_config # 检测配置是否存在并编辑配置文件
     start_ppp
     echo "PPP服务已配置并启动。"

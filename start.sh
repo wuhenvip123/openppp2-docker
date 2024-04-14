@@ -69,7 +69,7 @@ RestartSec=10
 [Install]
 WantedBy=multi-user.target
 EOF
-
+    create_or_modify_config
     echo "启用并启动PPP服务..."
     sudo systemctl enable ppp.service
     sudo systemctl daemon-reload
@@ -112,7 +112,7 @@ function view_ppp_session() {
 
 function create_or_modify_config() {
     echo "配置或修改PPP配置文件..."
-    ppp_config="/etc/ppp/appsettings.json"
+    ppp_config="$ppp_dir/appsettings.json"
     if [[ -f "$ppp_config" ]]; then
         echo "已存在配置文件：$ppp_config"
         echo "是否要编辑现有的配置文件？ (y/n)"

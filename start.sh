@@ -112,43 +112,6 @@ function view_ppp_session() {
     screen -r ppp
 }
 
-# 显示菜单并处理用户输入
-PS3='请选择一个操作: '
-options=("安装PPP" "启动PPP" "停止PPP" "重启PPP" "更新PPP" "卸载PPP" "查看PPP会话" "修改配置文件" "退出")
-select opt in "${options[@]}"
-do
-    case $opt in
-        "安装PPP")
-            install_ppp
-            ;;
-        "启动PPP")
-            start_ppp
-            ;;
-        "停止PPP")
-            stop_ppp
-            ;;
-        "重启PPP")
-            restart_ppp
-            ;;
-        "更新PPP")
-            update_ppp
-            ;;
-        "卸载PPP")
-            uninstall_ppp
-            ;;
-        "查看PPP会话")
-            view_ppp_session
-            ;;
-        "修改配置文件")
-            modify_config
-            ;;
-        "退出")
-            break
-            ;;
-        *) echo "无效选项 $REPLY";;
-    esac
-done
-
 function modify_config() {
     echo "配置或修改PPP配置文件..."
     ppp_config="$ppp_dir/appsettings.json"
@@ -317,3 +280,40 @@ EOF
         echo "新配置文件已创建。"
     fi
 }
+
+# 显示菜单并处理用户输入
+PS3='请选择一个操作: '
+options=("安装PPP" "启动PPP" "停止PPP" "重启PPP" "更新PPP" "卸载PPP" "查看PPP会话" "修改配置文件" "退出")
+select opt in "${options[@]}"
+do
+    case $opt in
+        "安装PPP")
+            install_ppp
+            ;;
+        "启动PPP")
+            start_ppp
+            ;;
+        "停止PPP")
+            stop_ppp
+            ;;
+        "重启PPP")
+            restart_ppp
+            ;;
+        "更新PPP")
+            update_ppp
+            ;;
+        "卸载PPP")
+            uninstall_ppp
+            ;;
+        "查看PPP会话")
+            view_ppp_session
+            ;;
+        "修改配置文件")
+            modify_config
+            ;;
+        "退出")
+            break
+            ;;
+        *) echo "无效选项 $REPLY";;
+    esac
+done

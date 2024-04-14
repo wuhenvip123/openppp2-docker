@@ -2,10 +2,6 @@
 
 ppp_dir="/etc/ppp" # 定义安装目录
 
-# 创建目录并进入
-mkdir -p $ppp_dir
-cd $ppp_dir
-
 # 定义安装和管理PPP的函数
 function install_ppp() {
     echo "更新系统和安装依赖..."
@@ -47,10 +43,8 @@ function install_ppp() {
     fi
 
     echo "下载文件中..."
-    wget "$download_url"
-    echo "解压下载的文件..."
-    unzip -o '*.zip' -x 'appsettings.json' && rm *.zip # 不解压appsettings.json
-    chmod +x ppp
+    wget -O package.zip "$download_url" && echo "解压下载的文件..." && unzip -o package.zip -d $ppp_dir && rm package.zip
+    chmod +x $ppp_dir/ppp
 
     echo "配置系统服务..."
     cat > /etc/systemd/system/ppp.service << EOF
@@ -69,13 +63,23 @@ RestartSec=10
 [Install]
 WantedBy=multi-user.target
 EOF
-    create_or_modify_config
-    echo "启用并启动PPP服务..."
+
     sudo systemctl enable ppp.service
     sudo systemctl daemon-reload
     sudo systemctl start ppp.service
-    sudo systemctl status ppp.service
     echo "PPP服务已配置并启动。"
+}
+
+function uninstall_ppp() {
+    echo "停止并卸载PPP服务..."
+    sudo systemctl stop ppp.service
+    sudo systemctl disable ppp.service
+    sudo rm -f /etc/systemd/system/ppp.service
+    sudo systemctl daemon-reload
+    sudo systemctl reset-failed
+    echo "删除安装文件..."
+    sudo rm -rf $ppp_dir
+    echo "PPP服务已完全卸载。"
 }
 
 function start_ppp() {
@@ -96,10 +100,8 @@ function restart_ppp() {
 function update_ppp() {
     echo "正在停止PPP服务以进行更新..."
     stop_ppp
-
     echo "更新PPP服务中..."
     install_ppp
-
     echo "重启PPP服务..."
     restart_ppp
     echo "PPP服务已更新并重启。"
@@ -110,7 +112,63 @@ function view_ppp_session() {
     screen -r ppp
 }
 
-function create_or_modify_config() {
+function modify_config() {
+    echo "配置或修改PPP配置文件..."
+    ppp_config="$ppp_dir/appsettings.json"
+    if [[ -f "$ppp_config" ]]; then
+        echo "已存在配置文件：$ppp_config"
+        echo "是否要编辑现有的配置文件？ (y/n)"
+        read edit_choice
+        if [[ "$edit_choice" == "y" ]]; then
+            vim "$ppp_config"
+            echo "配置文件已修改。"
+            restart_ppp
+        else
+            echo "跳过修改。"
+        fi
+    else
+        echo "配置文件不存在。"
+    fi
+}
+
+# 显示菜单并处理用户输入
+PS3='请选择一个操作: '
+options=("安装PPP" "启动PPP" "停止PPP" "重启PPP" "更新PPP" "卸载PPP" "查看PPP会话" "修改配置文件" "退出")
+select opt in "${options[@]}"
+do
+    case $opt in
+        "安装PPP")
+            install_ppp
+            ;;
+        "启动PPP")
+            start_ppp
+            ;;
+        "停止PPP")
+            stop_ppp
+            ;;
+        "重启PPP")
+            restart_ppp
+            ;;
+        "更新PPP")
+            update_ppp
+            ;;
+        "卸载PPP")
+            uninstall_ppp
+            ;;
+        "查看PPP会话")
+            view_ppp_session
+            ;;
+        "修改配置文件")
+            modify_config
+            ;;
+        "退出")
+            break
+            ;;
+        *) echo "无效选项 $REPLY";;
+    esac
+done
+
+function modify_config() {
     echo "配置或修改PPP配置文件..."
     ppp_config="$ppp_dir/appsettings.json"
     if [[ -f "$ppp_config" ]]; then
@@ -278,37 +336,3 @@ EOF
         echo "新配置文件已创建。"
     fi
 }
-
-# 显示菜单并处理用户输入
-PS3='请选择一个操作: '
-options=("安装PPP" "启动PPP" "停止PPP" "重启PPP" "更新PPP" "查看PPP会话" "配置或修改配置文件" "退出")
-select opt in "${options[@]}"
-do
-    case $opt in
-        "安装PPP")
-            install_ppp
-            ;;
-        "启动PPP")
-            start_ppp
-            ;;
-        "停止PPP")
-            stop_ppp
-            ;;
-        "重启PPP")
-            restart_ppp
-            ;;
-        "更新PPP")
-            update_ppp
-            ;;
-        "查看PPP会话")
-            view_ppp_session
-            ;;
-        "配置或修改配置文件")
-            create_or_modify_config
-            ;;
-        "退出")
-            break
-            ;;
-        *) echo "无效选项 $REPLY";;
-    esac
-done

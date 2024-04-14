@@ -113,6 +113,8 @@ function update_ppp() {
 function view_ppp_session() {
     echo "查看PPP会话..."
     screen -r ppp
+    echo "返回主菜单..."
+    show_menu
 }
 
 function modify_config() {
@@ -281,38 +283,43 @@ EOF
 }
 
 # 显示菜单并处理用户输入
-PS3='请选择一个操作: '
-options=("安装PPP" "启动PPP" "停止PPP" "重启PPP" "更新PPP" "卸载PPP" "查看PPP会话" "修改配置文件" "退出")
-select opt in "${options[@]}"
-do
-    case $opt in
-        "安装PPP")
-            install_ppp
-            ;;
-        "启动PPP")
-            start_ppp
-            ;;
-        "停止PPP")
-            stop_ppp
-            ;;
-        "重启PPP")
-            restart_ppp
-            ;;
-        "更新PPP")
-            update_ppp
-            ;;
-        "卸载PPP")
-            uninstall_ppp
-            ;;
-        "查看PPP会话")
-            view_ppp_session
-            ;;
-        "修改配置文件")
-            modify_config
-            ;;
-        "退出")
-            break
-            ;;
-        *) echo "无效选项 $REPLY";;
-    esac
-done
+function show_menu() {
+    PS3='请选择一个操作: '
+    options=("安装PPP" "启动PPP" "停止PPP" "重启PPP" "更新PPP" "卸载PPP" "查看PPP会话" "修改配置文件" "退出")
+    select opt in "${options[@]}"
+    do
+        case $opt in
+            "安装PPP")
+                install_ppp
+                ;;
+            "启动PPP")
+                start_ppp
+                ;;
+            "停止PPP")
+                stop_ppp
+                ;;
+            "重启PPP")
+                restart_ppp
+                ;;
+            "更新PPP")
+                update_ppp
+                ;;
+            "卸载PPP")
+                uninstall_ppp
+                ;;
+            "查看PPP会话")
+                view_ppp_session
+                ;;
+            "修改配置文件")
+                modify_config
+                ;;
+            "退出")
+                break
+                ;;
+            *) echo "无效选项 $REPLY";;
+        esac
+    done
+}
+
+# 脚本入口
+show_menu

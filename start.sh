@@ -1,12 +1,10 @@
 #!/bin/bash
 
-# 更新系统和安装必需的工具
-echo "更新系统和安装依赖..."
-apt update -y && apt install -y sudo screen unzip wget
+ppp_dir="/etc/ppp" # 定义安装目录
 
 # 创建目录并进入
-mkdir -p /etc/ppp
-cd /etc/ppp
+mkdir -p $ppp_dir
+cd $ppp_dir
 
 # 定义安装和管理PPP的函数
 function install_ppp() {
@@ -14,8 +12,8 @@ function install_ppp() {
     apt update -y && apt install -y sudo screen unzip wget
 
     echo "创建目录并进入..."
-    mkdir -p /etc/ppp
-    cd /etc/ppp
+    mkdir -p $ppp_dir
+    cd $ppp_dir
 
     kernel_version=$(uname -r)
     arch=$(dpkg --print-architecture)
@@ -51,7 +49,7 @@ function install_ppp() {
     echo "下载文件中..."
     wget "$download_url"
     echo "解压下载的文件..."
-    unzip -o '*.zip' && rm *.zip
+    unzip -o '*.zip' -x 'appsettings.json' && rm *.zip # 不解压appsettings.json
     chmod +x ppp
 
     echo "配置系统服务..."
@@ -63,8 +61,8 @@ After=network.target
 [Service]
 Type=simple
 User=root
-WorkingDirectory=/etc/ppp
-ExecStart=/usr/bin/screen -DmS ppp /etc/ppp/ppp -m -s
+WorkingDirectory=$ppp_dir
+ExecStart=/usr/bin/screen -DmS ppp $ppp_dir/ppp -m -s
 Restart=always
 RestartSec=10
 
@@ -96,8 +94,15 @@ function restart_ppp() {
 }
 
 function update_ppp() {
-    echo "更新PPP服务..."
+    echo "正在停止PPP服务以进行更新..."
+    stop_ppp
+
+    echo "更新PPP服务中..."
     install_ppp
+
+    echo "重启PPP服务..."
+    restart_ppp
+    echo "PPP服务已更新并重启。"
 }
 
 function view_ppp_session() {

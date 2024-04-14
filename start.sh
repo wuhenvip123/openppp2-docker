@@ -64,10 +64,9 @@ RestartSec=10
 WantedBy=multi-user.target
 EOF
     modify_config # 检测配置是否存在并编辑配置文件
-    sudo systemctl enable ppp.service
-    sudo systemctl daemon-reload
-    sudo systemctl start ppp.service
+    start_ppp
     echo "PPP服务已配置并启动。"
+    show_menu
 }
 
 function uninstall_ppp() {

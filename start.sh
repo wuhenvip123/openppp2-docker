@@ -112,25 +112,6 @@ function view_ppp_session() {
     screen -r ppp
 }
 
-function modify_config() {
-    echo "配置或修改PPP配置文件..."
-    ppp_config="$ppp_dir/appsettings.json"
-    if [[ -f "$ppp_config" ]]; then
-        echo "已存在配置文件：$ppp_config"
-        echo "是否要编辑现有的配置文件？ (y/n)"
-        read edit_choice
-        if [[ "$edit_choice" == "y" ]]; then
-            vim "$ppp_config"
-            echo "配置文件已修改。"
-            restart_ppp
-        else
-            echo "跳过修改。"
-        fi
-    else
-        echo "配置文件不存在。"
-    fi
-}
-
 # 显示菜单并处理用户输入
 PS3='请选择一个操作: '
 options=("安装PPP" "启动PPP" "停止PPP" "重启PPP" "更新PPP" "卸载PPP" "查看PPP会话" "修改配置文件" "退出")

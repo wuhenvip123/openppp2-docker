@@ -4,7 +4,7 @@
 ```
 bash <(curl -Ls https://raw.githubusercontent.com/rebecca554owen/openppp2-docker/main/ppp.sh)
 ```
-## 二进制版本
+## 二进制版本（只写了服务端，客户端还没写）
 ```
 bash <(curl -Ls https://raw.githubusercontent.com/rebecca554owen/openppp2-docker/main/start.sh)
 ```

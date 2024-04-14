@@ -165,6 +165,19 @@ uninstall_ppp() {
     fi
     docker rm -f ${ppp_name} &>/dev/null
     docker rmi -f $(docker images -q rebecca554owen/${ppp_name}) &>/dev/null || echo -e "Docker 镜像可能已被删除。"
+
+    # 获取PPP进程的PID
+    pids=$(pgrep ppp)
+    
+    # 检查是否有PID返回
+    if [ -z "$pids" ]; then
+        echo "没有找到PPP进程。"
+    else
+        echo "找到PPP进程，正在杀死..."
+        kill $pids
+        echo "已发送终止信号到PPP进程。"
+    fi
+
     echo -e "${ppp_name}已卸载。"
     before_show_menu
 }

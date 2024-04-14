@@ -112,8 +112,7 @@ function update_ppp() {
 function view_ppp_session() {
     echo "查看PPP会话..."
     screen -r ppp
-    echo "返回主菜单..."
-    show_menu
+    echo "提示：使用 'Ctrl+a d' 来detach会话而不是关闭它。"
 }
 
 function modify_config() {

@@ -20,7 +20,7 @@ WORKDIR /openppp2
 COPY --from=builder /env/openppp2/bin /openppp2
 COPY test.sh /openppp2/test.sh
 # 安装运行时依赖，并配置系统环境
-RUN apt-get update && apt-get install -y --no-install-recommends curl dnsutils iptables iproute2 iputils-ping lsof netperf tzdata && \
+RUN apt-get update && apt-get install -y --no-install-recommends curl dnsutils iptables iproute2 iputils-ping lsof net-tools netperf tzdata && \
     ln -fs /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
     dpkg-reconfigure -f noninteractive tzdata && \
     chmod +x test.sh && \

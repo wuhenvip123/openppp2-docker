@@ -1,8 +1,19 @@
 #!/bin/bash
 
-# 用户输入 VPS IP 地址，默认为 10.0.0.1
-read -p "请输入 VPS IP 地址 [默认: 10.0.0.1]: " serverIP
-serverIP=${serverIP:-10.0.0.1}
+# 使用curl从外部服务获取当前服务器的公网IP
+default_serverIP=$(curl -s http://ipinfo.io/ip)
+
+# 如果curl命令失败，则回退到一个硬编码的默认IP
+if [ -z "$default_serverIP" ]; then
+    default_serverIP="10.0.0.1"
+fi
+
+# 提示用户输入VPS IP地址，提供从外部服务获取的IP作为默认值
+read -p "请输入 VPS IP 地址 [默认: $default_serverIP]: " serverIP
+serverIP=${serverIP:-$default_serverIP}
+
+echo "使用的 VPS IP 地址为: $serverIP"
+
 
 # 用户输入测试次数，默认为 1
 read -p "请输入测试次数 [默认: 1]: " count

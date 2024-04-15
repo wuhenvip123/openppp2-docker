@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# 使用curl从外部服务获取当前服务器的公网IP
-default_serverIP=$(curl -s http://ipinfo.io/ip)
+# 使用curl从外部服务获取当前服务器的公网IP，设置超时为5秒
+default_serverIP=$(curl -s --max-time 5 http://ipinfo.io/ip)
 
 # 如果curl命令失败，则回退到一个硬编码的默认IP
 if [ -z "$default_serverIP" ]; then
@@ -13,7 +13,6 @@ read -p "请输入 VPS IP 地址 [默认: $default_serverIP]: " serverIP
 serverIP=${serverIP:-$default_serverIP}
 
 echo "使用的 VPS IP 地址为: $serverIP"
-
 
 # 用户输入测试次数，默认为 1
 read -p "请输入测试次数 [默认: 1]: " count

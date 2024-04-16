@@ -161,6 +161,7 @@ function modify_config() {
             restart_ppp
             return
         fi
+    else
     # 如果配置文件不存在，则重新生成配置文件
     echo -e "重新生成${ppp_config}。"
     # 检测公网出口/内网IP来提示用户

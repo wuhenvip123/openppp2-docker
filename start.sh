@@ -152,7 +152,7 @@ function view_ppp_session() {
 
 function modify_config() {
     ppp_config="${ppp_dir}/appsettings.json"
-    if [ -f "${ppp_dir}" ]; then
+    if [ -f "${ppp_config}" ]; then
         echo -e "检测到已存在${ppp_config}配置文件。"
         read -p "是否要编辑现有的配置文件？[Y/n]: " edit_choice
         if [[ $edit_choice =~ ^[Yy]$ ]]; then

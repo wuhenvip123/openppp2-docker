@@ -295,8 +295,7 @@ create_or_modify_ppp_config() {
             restart_ppp_update
             return
         fi 
-    fi
-
+    else
     # 如果配置文件不存在，则重新生成配置文件
     echo -e "${yellow}重新生成${ppp_config}。${plain}"
     # 检测公网出口/内网IP来提示用户
@@ -446,6 +445,7 @@ create_or_modify_ppp_config() {
     }
 }
 EOF
+    fi
     echo -e "${green}${ppp_config}配置文件生成成功。${plain}"
     restart_ppp_update
 }

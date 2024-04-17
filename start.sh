@@ -156,9 +156,12 @@ function modify_config() {
         echo -e "检测到已存在${ppp_config}配置文件。"
         read -p "是否要编辑现有的配置文件？[Y/n]: " edit_choice
         if [[ $edit_choice =~ ^[Yy]$ ]]; then
-            vim "${ppp_config}"
-            echo -e "${ppp_config}配置文件修改成功。"
-            restart_ppp
+                vim "${ppp_config}"
+                echo -e "${ppp_config}配置文件修改成功。"
+                restart_ppp
+                return
+            else
+            echo -e "${green}不修改${ppp_config}配置文件。${plain}"
             return
         fi
     else
@@ -311,6 +314,7 @@ function modify_config() {
     }
 }
 EOF
+    restart_ppp
     fi
     echo -e "${ppp_config}配置文件生成成功。"
 }

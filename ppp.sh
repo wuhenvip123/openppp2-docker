@@ -294,7 +294,10 @@ create_or_modify_ppp_config() {
             echo -e "${green}${ppp_config}配置文件修改成功。${plain}"
             restart_ppp_update
             return
-        fi 
+        else
+        echo -e "${green}不修改${ppp_config}配置文件。${plain}"
+        return
+        fi
     else
     # 如果配置文件不存在，则重新生成配置文件
     echo -e "${yellow}重新生成${ppp_config}。${plain}"

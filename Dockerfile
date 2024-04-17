@@ -12,8 +12,8 @@ RUN git clone --depth=1 https://github.com/liulilittle/openppp2.git $THIRD_PARTY
     make -j$(nproc) && \
     chmod +x ../bin/ppp
 
-# 准备最终镜像
-FROM ubuntu:22.04
+# 准备最终镜像 22.04 23.10
+FROM ubuntu:23.10
 # 设置工作目录
 WORKDIR /openppp2
 # 复制构建好的应用到最终镜像

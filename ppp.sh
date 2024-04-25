@@ -320,7 +320,6 @@ create_or_modify_ppp_config() {
     cat >"${ppp_config}" <<EOF
 {
     "concurrent": ${concurrent},
-    "cdn": [2080, 2443],
     "key": {
         "kf": 154543927,
         "kx": 128,
@@ -411,7 +410,7 @@ create_or_modify_ppp_config() {
         "log": "./ppp.log",
         "node": 1,
         "subnet": true,
-        "mapping": true,
+        "mapping": false,
         "backend": "",
         "backend-key": "HaEkTB55VcHovKtUPHmU9zn0NjFmC6tff"
     },
@@ -432,17 +431,17 @@ create_or_modify_ppp_config() {
         "mappings": [
             {
                 "local-ip": "${lan_ip}",
-                "local-port": 80,
+                "local-port": 10000,
                 "protocol": "tcp",
                 "remote-ip": "::",
-                "remote-port": 10001
+                "remote-port": 10000
             },
             {
                 "local-ip": "${lan_ip}",
-                "local-port": 7000,
+                "local-port": 10000,
                 "protocol": "udp",
                 "remote-ip": "::",
-                "remote-port": 10002
+                "remote-port": 10000
             }
         ]
     }

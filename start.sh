@@ -170,8 +170,8 @@ function modify_config() {
     # 检测公网出口/内网IP来提示用户
     curl -m 10 -s ip.sb
     ip addr show eth0 | grep inet | awk '{print $2}' | cut -d/ -f1
-    
-    read -p "请输入VPS IP: " vps_ip
+    default_vps_ip="::"
+    read -p "请输入VPS IP地址（默认为${default_vps_ip}，服务端保持默认值即可）: " vps_ip
     read -p "请输入VPS 端口: " port
     # 设置监听Interface的默认值::用于ipv6
     default_lan_ip="::"

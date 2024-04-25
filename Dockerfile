@@ -18,12 +18,10 @@ FROM ubuntu:23.10
 WORKDIR /openppp2
 # 复制构建好的应用到最终镜像
 COPY --from=builder /env/openppp2/bin /openppp2
-COPY test.sh /openppp2/test.sh
 # 安装运行时依赖，并配置系统环境
-RUN apt-get update && apt-get install -y --no-install-recommends curl dnsutils iptables iproute2 iputils-ping lsof net-tools netperf tzdata && \
+RUN apt-get update && apt-get install -y --no-install-recommends curl dnsutils iptables iproute2 iputils-ping lsof net-tools netperf tzdata vim && \
     ln -fs /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
     dpkg-reconfigure -f noninteractive tzdata && \
-    chmod +x test.sh && \
     rm -rf /var/lib/apt/lists/*
 
 # 设置启动脚本为容器启动时运行的命令

@@ -252,12 +252,11 @@ services:
 EOF
     else
     cat >"${ppp_docker}" <<EOF
-# Client模式，注意：避免使用restart: always以防重启后失联
 services:
   ${ppp_name}:
     image: rebecca554owen/${ppp_name}:latest
     container_name: ${ppp_name}
-    restart: no
+    restart: always
     cap_add:
       - NET_ADMIN
     devices:
@@ -268,7 +267,8 @@ services:
       - "8080:8080"
     networks:
       - ${ppp_name}network
-    command: ppp --mode=client --tun-flash=yes --tun-static=yes --block-quic=no --set-http-proxy=yes
+    command: ppp --mode=client --tun-promisc=yes --tun-flash=yes --tun-static=yes --block-quic=no  --set-http-proxy=yes 
+
 # 定义网络
 networks:
   ${ppp_name}network:

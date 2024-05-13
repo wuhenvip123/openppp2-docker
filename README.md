@@ -30,3 +30,11 @@ cat /proc/sys/net/ipv4/ip_forward
 ```
 iptables -t nat -A PREROUTING -p tcp --dport 8080 -j DNAT --to-destination 127.0.0.1:8080
 ```
+
+# 自用 BBR 脚本
+```
+bash <(curl -Ls https://raw.githubusercontent.com/rebecca554owen/openppp2-docker/main/bbr.sh)
+```
+```
+bash <(curl -Ls https://raw.githubusercontents.com/rebecca554owen/openppp2-docker/main/bbr.sh)
+```

@@ -172,8 +172,16 @@ function modify_config() {
     ip addr | grep 'inet ' | grep -v ' lo' | awk '{print $2}' | cut -d/ -f1
     default_vps_ip="::"
     read -p "请输入VPS IP地址（默认为${default_vps_ip}，服务端保持默认值即可）: " vps_ip
-    read -p "请输入VPS 端口 [默认: 2024]: " port
-    port=${port:-2024}
+    while true; do
+        read -p "请输入VPS 端口 [默认: 2024]: " port
+        port=${port:-2024}
+    
+        if [[ "$port" =~ ^[0-9]+$ ]] && [ "$port" -ge 1000 ] && [ "$port" -le 65535 ]; then
+            break
+        else
+            echo "输入的端口无效。请确保它是在1000到65535的范围内。"
+        fi
+    done
     # 设置监听Interface的默认值::用于ipv6
     default_lan_ip="::"
     read -p "请输入内网IP地址（默认为${default_lan_ip}，服务端保持默认值即可）: " lan_ip

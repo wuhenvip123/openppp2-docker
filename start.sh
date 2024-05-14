@@ -172,6 +172,7 @@ function modify_config() {
     ip addr | grep 'inet ' | grep -v ' lo' | awk '{print $2}' | cut -d/ -f1
     default_vps_ip="::"
     read -p "请输入VPS IP地址（默认为${default_vps_ip}，服务端保持默认值即可）: " vps_ip
+    vps_ip=${vps_ip:-$default_vps_ip}
     while true; do
         read -p "请输入VPS 端口 [默认: 2024]: " port
         port=${port:-2024}

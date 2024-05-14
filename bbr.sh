@@ -1,3 +1,4 @@
+#!/bin/bash
 cat > '/etc/sysctl.conf' << EOF
 # ------ 网络调优: 基本 ------
 # TTL 配置, Linux 默认 64
@@ -204,3 +205,4 @@ net.ipv6.conf.lo.disable_ipv6 = 0
 
 EOF
 sysctl -p
+reboot

@@ -6,8 +6,9 @@ ppp_dir="/etc/ppp" # 定义安装目录
 OS=""
 if [ -f /etc/redhat-release ]; then
     OS="CentOS"
-elif [ -f /etc/lsb-release ]; then
-    OS="Ubuntu"
+elif [ -f /etc/os-release ]; then
+    . /etc/os-release
+    OS=$ID
 fi
 
 # 定义安装和管理PPP的函数
@@ -15,16 +16,20 @@ function install_ppp() {
     echo "检测到操作系统：$OS"
     
     # 根据操作系统选择合适的更新和安装命令
-    if [ "$OS" == "Ubuntu" ]; then
-        echo "更新系统和安装依赖 (Ubuntu)..."
-        apt update && apt install -y sudo screen unzip wget
-    elif [ "$OS" == "CentOS" ]; then
-        echo "更新系统和安装依赖 (CentOS)..."
-        yum update -y && yum install -y sudo screen unzip wget
-    else
-        echo "不支持的操作系统"
-        return 1
-    fi
+    case "$OS" in
+        ubuntu | debian)
+            echo "更新系统和安装依赖 (Debian/Ubuntu)..."
+            apt update && apt install -y sudo screen unzip wget
+            ;;
+        centos)
+            echo "更新系统和安装依赖 (CentOS)..."
+            yum update -y && yum install -y sudo screen unzip wget
+            ;;
+        *)
+            echo "不支持的操作系统"
+            return 1
+            ;;
+    esac
 
     echo "创建目录并进入..."
     mkdir -p $ppp_dir

@@ -1,20 +1,20 @@
-# OpenPPP2 部署脚本，仅供自己学习sh脚本使用，用于解决同时连接多个VPS服务端。
+## OpenPPP2 部署脚本，仅供自己学习sh脚本使用，用于解决同时连接多个VPS服务端。
 1. 在Debian/Ubuntu系统的VPS上，执行上面的命令，可选下面的 docker 版本命令。
 ```
-bash <(curl -Ls https://raw.githubusercontent.com/rebecca554owen/openppp2-docker/main/start.sh)
+bash <(curl -Ls https://raw.githubusercontent.com/rebecca554owen/openppp2-docker/main/ppp.sh)
 ```
 ```
-bash <(curl -Ls https://raw.githubusercontents.com/rebecca554owen/openppp2-docker/main/ppp.sh)
+bash <(curl -Ls https://raw.githubusercontents.com/rebecca554owen/openppp2-docker/main/ppp-docker.sh)
 ```
 输入 `1` 开始安装，一直回车保持默认或者根据需要自定义端口;  
 输入 `7` 进入查看启动状态;按下 `Ctrl + a ` 再按 `d` 键 退出。
 
 2.在本地局域网内的 Linux 服务器执行上面的命令，可选下面的 docker 版本命令。
 ```
-bash <(curl -Ls https://raw.githubusercontent.com/rebecca554owen/openppp2-docker/main/start.sh)
+bash <(curl -Ls https://raw.githubusercontent.com/rebecca554owen/openppp2-docker/main/ppp.sh)
 ```
 ```
-bash <(curl -Ls https://raw.githubusercontents.com/rebecca554owen/openppp2-docker/main/ppp.sh)
+bash <(curl -Ls https://raw.githubusercontents.com/rebecca554owen/openppp2-docker/main/ppp-docker.sh)
 ```
 输入 `1` 开始安装，根据提示输入VPS的IP地址/端口。  
 如果需要多开，自行 `appsetting.json` 文件，写多个不同 http 端口服务即可。  

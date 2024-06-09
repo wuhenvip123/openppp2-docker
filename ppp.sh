@@ -30,12 +30,13 @@ pre_setup() {
 
     # 检查是否为CentOS
     if grep -q 'ID=centos' /etc/os-release; then
-        echo -e "${yellow}" "检测到CentOS系统，正在为CentOS安装必需的软件包...${plain}"
-        yum install -y sudo curl vim
+        echo -e "${yellow}" "检测到CentOS系统，正在更新系统并安装必需的软件包...${plain}"
+        yum update -y
+        yum install -y sudo curl vim uuid
         echo -e "${green}" "所需软件安装完成。${plain}"
     else
         # 默认为Debian/Ubuntu系统
-        echo -e "${yellow}" "正在安装必需的软件包...${plain}"
+        echo -e "${yellow}" "正在更新系统并安装必需的软件包...${plain}"
         apt-get update
         apt-get install -y sudo curl vim uuid-runtime
         echo -e "${green}" "所需软件安装完成。${plain}"

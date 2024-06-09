@@ -273,7 +273,7 @@ services:
       - "8080:8080"
     networks:
       - ${ppp_name}network
-    command: ppp --mode=client --tun-promisc=yes --tun-flash=yes --tun-static=yes --block-quic=no  --set-http-proxy=yes 
+    command: ppp --mode=client --tun-promisc=yes --tun-static=yes --block-quic=no  --set-http-proxy=yes 
 
 # 定义网络
 networks:

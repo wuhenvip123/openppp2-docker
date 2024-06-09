@@ -401,7 +401,7 @@ create_or_modify_ppp_config() {
         }
     },
     "server": {
-        "log": "./ppp.log",
+        "log": "/dev/null",
         "node": 1,
         "subnet": true,
         "mapping": false,
@@ -420,7 +420,7 @@ create_or_modify_ppp_config() {
         },
         "http-proxy": {
             "bind": "${lan_ip}",
-            "port": 8080
+            "port": ${port}
         },
         "mappings": [
             {

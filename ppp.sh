@@ -331,7 +331,7 @@ function modify_config() {
         },
         "http-proxy": {
             "bind": "${lan_ip}",
-            "port": 8080
+            "port": ${port}
         },
         "mappings": [
             {

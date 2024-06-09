@@ -269,22 +269,9 @@ services:
       - /dev/net/tun:/dev/net/tun
     volumes:
       - ./appsettings.json:/${ppp_name}/appsettings.json
-    ports:
-      - "8080:8080"
-    networks:
-      - ${ppp_name}network
-    command: ppp --mode=client --tun-promisc=yes --tun-static=yes --block-quic=no  --set-http-proxy=yes 
+    network_mode: host
+    command: ppp --mode=client --tun-vnet=yes --set-http-proxy=yes --block-quic=yes --tun-static=no --tun-host=no
 
-# 定义网络
-networks:
-  ${ppp_name}network:
-    driver: bridge
-    # enable_ipv6: true # 是否启用IPv6
-    ipam:
-      driver: default
-      config:
-        - subnet: 172.20.0.0/24
-        # - subnet: 2001:db8:1::/64 # 定义IPv6子网
 EOF
     
     fi

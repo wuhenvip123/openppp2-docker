@@ -17,7 +17,7 @@ function install_ppp() {
     # 根据操作系统选择合适的更新和安装命令
     if [ "$OS" == "Ubuntu" ]; then
         echo "更新系统和安装依赖 (Ubuntu)..."
-        apt update -y && apt install -y sudo screen unzip wget
+        apt update && apt install -y sudo screen unzip wget
     elif [ "$OS" == "CentOS" ]; then
         echo "更新系统和安装依赖 (CentOS)..."
         yum update -y && yum install -y sudo screen unzip wget
@@ -31,7 +31,7 @@ function install_ppp() {
     cd $ppp_dir
 
     kernel_version=$(uname -r)
-    arch=$(uname -m) # CentOS 和 Ubuntu 对架构的描述可能不同，使用 uname -m 是更可靠的选择
+    arch=$(uname -m)
     echo "系统架构: $arch, 内核版本: $kernel_version"
 
     compare_kernel_version=$(echo -e "5.10\n$kernel_version" | sort -V | head -n1)
@@ -52,14 +52,18 @@ function install_ppp() {
     fi
 
     echo "默认下载地址: $default_url"
-    echo "您是否想使用默认下载地址? 输入 'no' 以输入新的下载地址: "
+    echo "是否使用默认下载地址? (Y/n):"
     read use_default
-
-    if [[ "$use_default" != "no" ]]; then
-        download_url="$default_url"
-    else
+    
+    # 将输入转换为小写以简化比较
+    use_default=$(echo "$use_default" | tr '[:upper:]' '[:lower:]')
+    
+    # 只有当用户明确输入 'n' 或 'no' 时才请求输入新的下载地址
+    if [[ "$use_default" == "n" || "$use_default" == "no" ]]; then
         echo "请输入新的下载地址:"
         read download_url
+    else
+        download_url="$default_url"
     fi
 
     echo "下载文件中..."

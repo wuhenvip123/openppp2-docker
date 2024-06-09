@@ -2,28 +2,48 @@
 
 ppp_dir="/etc/ppp" # 定义安装目录
 
+# 检测操作系统
+OS=""
+if [ -f /etc/redhat-release ]; then
+    OS="CentOS"
+elif [ -f /etc/lsb-release ]; then
+    OS="Ubuntu"
+fi
+
 # 定义安装和管理PPP的函数
 function install_ppp() {
-    echo "更新系统和安装依赖..."
-    apt update -y && apt install -y sudo screen unzip wget
+    echo "检测到操作系统：$OS"
+    
+    # 根据操作系统选择合适的更新和安装命令
+    if [ "$OS" == "Ubuntu" ]; then
+        echo "更新系统和安装依赖 (Ubuntu)..."
+        apt update -y && apt install -y sudo screen unzip wget
+    elif [ "$OS" == "CentOS" ]; then
+        echo "更新系统和安装依赖 (CentOS)..."
+        yum update -y && yum install -y sudo screen unzip wget
+    else
+        echo "不支持的操作系统"
+        return 1
+    fi
 
     echo "创建目录并进入..."
     mkdir -p $ppp_dir
     cd $ppp_dir
 
     kernel_version=$(uname -r)
-    arch=$(dpkg --print-architecture)
+    arch=$(uname -m) # CentOS 和 Ubuntu 对架构的描述可能不同，使用 uname -m 是更可靠的选择
     echo "系统架构: $arch, 内核版本: $kernel_version"
 
     compare_kernel_version=$(echo -e "5.10\n$kernel_version" | sort -V | head -n1)
 
-    if [[ $arch == "amd64" ]]; then
+    # 定义不同架构和系统的URL
+    if [[ $arch == "x86_64" ]]; then
         if [[ $compare_kernel_version == "5.10" ]] && [[ $kernel_version != "5.10" ]]; then
             default_url="https://github.com/liulilittle/openppp2/releases/latest/download/openppp2-linux-amd64-io-uring.zip"
         else
             default_url="https://github.com/liulilittle/openppp2/releases/latest/download/openppp2-linux-amd64.zip"
         fi
-    elif [[ $arch == "arm64" ]]; then
+    elif [[ $arch == "aarch64" ]]; then
         if [[ $compare_kernel_version == "5.10" ]] && [[ $kernel_version != "5.10" ]]; then
             default_url="https://github.com/liulilittle/openppp2/releases/latest/download/openppp2-linux-aarch64-io-uring.zip"
         else

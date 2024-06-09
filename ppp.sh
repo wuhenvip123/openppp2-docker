@@ -28,16 +28,16 @@ pre_setup() {
         exit 1
     fi
 
-    # 检查是否为CentOS
-    if grep -q 'ID=centos' /etc/os-release; then
-        echo -e "${yellow}检测到CentOS系统，正在更新系统并安装必需的软件包...${plain}"
-        yum update -y
-        yum install -y sudo curl vim uuid
-        echo -e "${green}所需软件安装完成。${plain}"
-    elif grep -q 'ID=fedora' /etc/os-release; then
-        echo -e "${yellow}检测到Fedora系统，正在更新系统并安装必需的软件包...${plain}"
-        dnf update -y
-        dnf install -y sudo curl vim uuid
+    # 检查是否为CentOS或Fedora
+    if grep -q -e 'ID=centos' -e 'ID=fedora' /etc/os-release; then
+        echo -e "${yellow}检测到CentOS或Fedora系统，正在更新系统并安装必需的软件包...${plain}"
+        if command -v yum >/dev/null 2>&1; then
+            yum update -y
+            yum install -y sudo curl vim uuid
+        else
+            dnf update -y
+            dnf install -y sudo curl vim uuid
+        fi
         echo -e "${green}所需软件安装完成。${plain}"
     else
         # 默认为Debian/Ubuntu系统

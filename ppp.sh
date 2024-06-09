@@ -24,22 +24,27 @@ create_or_modify_ppp_config
 pre_setup() {
     # 检查是否为Alpine Linux
     if grep -q 'ID=alpine' /etc/os-release; then
-        echo -e "${red}" "错误: 本脚本不支持Alpine Linux。${plain}"
+        echo -e "${red}错误: 本脚本不支持Alpine Linux。${plain}"
         exit 1
     fi
 
     # 检查是否为CentOS
     if grep -q 'ID=centos' /etc/os-release; then
-        echo -e "${yellow}" "检测到CentOS系统，正在更新系统并安装必需的软件包...${plain}"
+        echo -e "${yellow}检测到CentOS系统，正在更新系统并安装必需的软件包...${plain}"
         yum update -y
         yum install -y sudo curl vim uuid
-        echo -e "${green}" "所需软件安装完成。${plain}"
+        echo -e "${green}所需软件安装完成。${plain}"
+    elif grep -q 'ID=fedora' /etc/os-release; then
+        echo -e "${yellow}检测到Fedora系统，正在更新系统并安装必需的软件包...${plain}"
+        dnf update -y
+        dnf install -y sudo curl vim uuid
+        echo -e "${green}所需软件安装完成。${plain}"
     else
         # 默认为Debian/Ubuntu系统
-        echo -e "${yellow}" "正在更新系统并安装必需的软件包...${plain}"
+        echo -e "${yellow}正在更新系统并安装必需的软件包...${plain}"
         apt-get update
         apt-get install -y sudo curl vim uuid-runtime
-        echo -e "${green}" "所需软件安装完成。${plain}"
+        echo -e "${green}所需软件安装完成。${plain}"
     fi
 }
 

@@ -88,7 +88,7 @@ mode_choice=${mode_choice:-1}
 
 # 根据选择设置ExecStart和Restart策略
 if [[ "$mode_choice" == "2" ]]; then
-    exec_start="/usr/bin/screen -DmS ppp $ppp_dir/ppp --mode=client --tun-host=no --tun-vnet=yes --tun-static=yes --block-quic=no --set-http-proxy=yes"
+    exec_start="/usr/bin/screen -DmS ppp $ppp_dir/ppp --mode=client --tun-host=yes --tun-vnet=yes --tun-static=yes --block-quic=no --set-http-proxy=yes"
     restart_policy="no"
 else
     exec_start="/usr/bin/screen -DmS ppp $ppp_dir/ppp --mode=server"

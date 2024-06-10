@@ -11,7 +11,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-14.04] # ubuntu-22.04, ubuntu-20.04, ubuntu-18.04
+        os: [ubuntu-24.04] # ubuntu-22.04, ubuntu-20.04, ubuntu-18.04
         arch: [amd64] # ${{ runner.arch }}
         platform: 
           - linux/amd64

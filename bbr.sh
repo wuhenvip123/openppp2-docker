@@ -24,7 +24,7 @@ net.ipv4.tcp_abort_on_overflow=1
 # Egress traffic control 相关. 可选 fq, cake 实测二者区别不大, 保持默认即可
 net.core.default_qdisc=cake
 # 6.X 内核版本目前默认使用 bbr3, 无需设置，实测比 bbr, bbr2 均有提升
-# net.ipv4.tcp_congestion_control=bbr3
+net.ipv4.tcp_congestion_control=bbr3
 
 # TCP 自动窗口
 # 要支持超过 64KB 的 TCP 窗口必须启用
@@ -171,7 +171,5 @@ net.ipv6.conf.all.disable_ipv6 = 0
 net.ipv6.conf.default.disable_ipv6 = 0
 net.ipv6.conf.lo.disable_ipv6 = 0
 # ------ END 转发相关 ------
-
 EOF
 sysctl -p
-reboot

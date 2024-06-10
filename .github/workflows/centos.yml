@@ -8,15 +8,7 @@ on:
 
 jobs:
   build:
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [centos-latest] # centos-8, centos-7
-        arch: [amd64] # ${{ runner.arch }}
-        platform: 
-          - linux/amd64
-
-    runs-on: ${{ matrix.os }}
+    runs-on: self-hosted
     env:
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 

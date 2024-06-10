@@ -173,5 +173,4 @@ net.ipv6.conf.lo.disable_ipv6 = 0
 # ------ END 转发相关 ------
 EOF
 sysctl -p
-cat /etc/sysctl.conf
 echo "systemctl reboot 重启生效"

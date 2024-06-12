@@ -30,6 +30,12 @@ clear_sysctl_conf() {
     echo "" > /etc/sysctl.conf
 }
 
+# 清理 sysctl 配置，不提示重启
+clear_sysctl() {
+    clear_sysctl_conf
+    sysctl -p
+}
+
 # 设置 ulimit 配置
 set_ulimit() {
     cat > /etc/security/limits.conf << EOF
@@ -45,12 +51,6 @@ EOF
     if ! grep -q "pam_limits.so" /etc/pam.d/common-session; then
         echo "session required pam_limits.so" >> /etc/pam.d/common-session
     fi
-}
-
-# 清理 sysctl 配置，不提示重启
-clear_sysctl() {
-    clear_sysctl_conf
-    sysctl -p
 }
 
 # 显示系统信息

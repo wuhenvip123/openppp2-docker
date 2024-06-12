@@ -29,19 +29,24 @@ select_container() {
     containers=($(docker ps -a --format "{{.ID}} {{.Names}}"))
     if [ ${#containers[@]} -eq 0 ]; then
         echo "没有找到容器。"
+        return 1
     else
         echo "所有容器："
         for ((i=0; i<${#containers[@]}; i+=2)); do
             echo "$((i/2+1)). ID: ${containers[i]} 名称: ${containers[i+1]}"
         done
-        read -p "输入要选择的容器序号：" container_index
-        if [[ $container_index =~ ^[0-9]+$ ]] && [ $container_index -gt 0 ] && [ $container_index -le $(( ${#containers[@]} / 2 )) ]; then
+        read -p "输入要选择的容器序号（或按Enter返回主菜单）：" container_index
+        if [[ -z "$container_index" ]]; then
+            return 1
+        elif [[ $container_index =~ ^[0-9]+$ ]] && [ $container_index -gt 0 ] && [ $container_index -le $(( ${#containers[@]} / 2 )) ]; then
             selected_container=${containers[((container_index-1)*2)]}
             echo "选中的容器: $selected_container"
         else
             echo "无效的序号。"
+            return 1
         fi
     fi
+    return 0
 }
 
 # 显示操作菜单

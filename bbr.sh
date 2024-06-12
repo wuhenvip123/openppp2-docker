@@ -79,7 +79,6 @@ check_status() {
     echo "TCP 拥塞控制算法 (proc): $net_congestion_control_proc"
     echo "默认队列规则 (sysctl): $net_qdisc_sysctl"
     echo "默认队列规则 (proc): $net_qdisc_proc"
-    echo "当前队列规则 (tc): $net_qdisc_tc"
 }
 
 # 获取可用的拥塞控制算法

@@ -42,12 +42,12 @@ select_container() {
             selected_container_name=${containers[((container_index-1)*3+1)]}
             selected_container_image=${containers[((container_index-1)*3+2)]}
             echo "选中的容器: ID: $selected_container 名称: $selected_container_name 镜像: $selected_container_image"
+            return 0
         else
             echo "无效的序号。"
             return 1
         fi
     fi
-    return 0
 }
 
 # 显示操作菜单
@@ -68,49 +68,37 @@ while true; do
     echo "7. 退出"
     read -p "输入数字选择操作：" choice
 
+    if [[ -z "$selected_container" && $choice -ne 1 && $choice -ne 7 ]]; then
+        echo "请先选择一个容器。"
+        select_container
+        if [[ $? -ne 0 ]]; then
+            continue
+        fi
+    fi
+
     case $choice in
         1)
             select_container
             ;;
         2)
-            if [ -n "$selected_container" ]; then
-                docker start $selected_container
-            else
-                echo "请先选择一个容器。"
-                select_container
-            fi
+            docker start $selected_container
             ;;
         3)
-            if [ -n "$selected_container" ]; then
-                docker stop $selected_container
-            else
-                echo "请先选择一个容器。"
-                select_container
-            fi
+            docker stop $selected_container
             ;;
         4)
-            if [ -n "$selected_container" ]; then
-                docker restart $selected_container
-            else
-                echo "请先选择一个容器。"
-                select_container
-            fi
+            docker restart $selected_container
             ;;
         5)
-            if [ -n "$selected_container" ]; then
-                read -p "输入要更新的容器镜像名称：" image_name
-                docker pull $image_name
-                if [ $? -eq 0 ]; then
-                    echo "重新创建使用新镜像的容器（注意：请根据实际情况修改启动参数）："
-                    docker stop $selected_container
-                    docker rm $selected_container
-                    docker run -d --name $selected_container_name $image_name
-                else
-                    echo "镜像更新失败，请检查镜像名称或网络连接。"
-                fi
+            read -p "输入要更新的容器镜像名称：" image_name
+            docker pull $image_name
+            if [ $? -eq 0 ]; then
+                echo "重新创建使用新镜像的容器（注意：请根据实际情况修改启动参数）："
+                docker stop $selected_container
+                docker rm $selected_container
+                docker run -d --name $selected_container_name $image_name
             else
-                echo "请先选择一个容器。"
-                select_container
+                echo "镜像更新失败，请检查镜像名称或网络连接。"
             fi
             ;;
         6)

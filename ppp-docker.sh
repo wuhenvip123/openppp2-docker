@@ -4,12 +4,6 @@
 ppp_path="/etc/ppp"
 ppp_name="openppp2"
 
-# 颜色全局变量
-red='\033[0;31m'
-green='\033[0;32m'
-yellow='\033[0;33m'
-plain='\033[0m'
-
 install_ppp() {
 pre_setup
 get_ip_info
@@ -24,13 +18,13 @@ create_or_modify_ppp_config
 pre_setup() {
     # 检查是否为Alpine Linux
     if grep -q 'ID=alpine' /etc/os-release; then
-        echo -e "${red}错误: 本脚本不支持Alpine Linux。${plain}"
+        echo "错误: 本脚本不支持Alpine Linux。"
         exit 1
     fi
 
     # 检查是否为CentOS或Fedora
     if grep -q -e 'ID=centos' -e 'ID=fedora' /etc/os-release; then
-        echo -e "${yellow}检测到CentOS或Fedora系统，正在更新系统并安装必需的软件包...${plain}"
+        echo "检测到CentOS或Fedora系统，正在更新系统并安装必需的软件包..."
         if command -v yum >/dev/null 2>&1; then
             yum update -y
             yum install -y sudo curl vim uuid
@@ -38,13 +32,13 @@ pre_setup() {
             dnf update -y
             dnf install -y sudo curl vim uuid
         fi
-        echo -e "${green}所需软件安装完成。${plain}"
+        echo "所需软件安装完成。"
     else
         # 默认为Debian/Ubuntu系统
-        echo -e "${yellow}正在更新系统并安装必需的软件包...${plain}"
+        echo "正在更新系统并安装必需的软件包..."
         apt-get update
         apt-get install -y sudo curl vim uuid-runtime
-        echo -e "${green}所需软件安装完成。${plain}"
+        echo "所需软件安装完成。"
     fi
 }
 
@@ -52,11 +46,11 @@ pre_setup() {
 get_ip_info() {
     local ip_info=$(curl -m 10 -s https://ipapi.co/json)
     if [[ $? -ne 0 ]]; then
-        echo -e "${yellow}" "警告: 无法从 ipapi.co 获取IP信息。您需要手动指定是否使用中国镜像。${plain}"
+        echo "警告: 无法从 ipapi.co 获取IP信息。您需要手动指定是否使用中国镜像。"
         read -p "您是否在中国？如果是请输入 'Y',否则输入 'N': [Y/n] " input
         [[ "${input}" =~ ^[Yy]$ ]] && echo "Y" || echo "N"
     else
-        if echo -e "${ip_info}" | grep -q 'China'; then
+        if echo "${ip_info}" | grep -q 'China'; then
             echo "Y"
         else
             echo "N"
@@ -68,40 +62,40 @@ get_ip_info() {
 check_and_install_docker() {
     # 检查 Docker 是否已安装
     if command -v docker >/dev/null; then
-        echo -e "${green}" "Docker 已安装。${plain}"
+        echo "Docker 已安装。"
         return  # 直接返回，不进行安装
     fi
 
     local use_cn_mirror=$(get_ip_info)
     if [ "${use_cn_mirror}" == "Y" ]; then
-        echo -e "${yellow}" "检测到您可能在中国，将使用中国镜像加速Docker安装。${plain}"
+        echo "检测到您可能在中国，将使用中国镜像加速Docker安装。"
         curl -fsSL https://get.docker.com | bash -s docker --mirror Aliyun
     else
-        echo -e "${yellow}" "未检测到您在中国，正常安装Docker。${plain}"
+        echo "未检测到您在中国，正常安装Docker。"
         curl -fsSL https://get.docker.com | sh
     fi
     systemctl enable docker
     systemctl start docker
-    echo -e "${green}" "Docker 安装完成。${plain}"
+    echo "Docker 安装完成。"
 }
 
 # 设置默认的配置路径和名称，并确认目录是否存在
 setup_directory_and_name() {
     if [ ! -d "${ppp_path}" ]; then
-        echo -e "${yellow}" "未找到配置路径，开始新建: ${ppp_path} 目录 ${plain}"
+        echo "未找到配置路径，开始新建: ${ppp_path} 目录"
         mkdir -p "${ppp_path}"
     else
-        echo -e "${green}" "配置路径已存在: ${ppp_path} ${plain}"
+        echo "配置路径已存在: ${ppp_path}"
     fi
     chmod 755 -R "${ppp_path}"
 }
 # 用户选择模式并配置
 select_mode_and_configure() {
-    echo -e "请选择运行模式："
+    echo "请选择运行模式："
     select mode in "server" "client"; do
         case ${REPLY} in
-            1|2) echo -e "您选择了 ${mode} 模式。"; break;;
-            *) echo -e "无效的选择，请重新选择。"; continue;;
+            1|2) echo "您选择了 ${mode} 模式。"; break;;
+            *) echo "无效的选择，请重新选择。"; continue;;
         esac
     done
 }
@@ -115,7 +109,7 @@ get_docker_compose_cmd() {
         # Docker Compose V1
         echo "docker-compose"
     else
-        echo -e "${red}" "未找到 Docker Compose 命令。${plain}"
+        echo "未找到 Docker Compose 命令。"
         exit 1
     fi
 }
@@ -125,52 +119,52 @@ docker_compose_action() {
     local action=$1
     local compose_cmd=$(get_docker_compose_cmd)
 
-    cd "${ppp_path}" || { echo -e "${red}错误：无法进入 ${ppp_path} 目录${plain}"; exit 1; }
+    cd "${ppp_path}" || { echo "错误：无法进入 ${ppp_path} 目录"; exit 1; }
 
     if [[ ${compose_cmd} == "docker compose" ]]; then
-        docker compose ${action} || { echo -e "${red}Docker Compose V2 操作失败${plain}"; exit 1; }
+        docker compose ${action} || { echo "Docker Compose V2 操作失败"; exit 1; }
     else
-        ${compose_cmd} ${action} || { echo -e "${red}Docker Compose V1 操作失败${plain}"; exit 1; }
+        ${compose_cmd} ${action} || { echo "Docker Compose V1 操作失败"; exit 1; }
     fi
 }
 
 start_ppp() {
-    echo -e "启动${ppp_name}...${plain}"
+    echo "启动${ppp_name}..."
     docker_compose_action "up -d"
-    echo -e "${ppp_name}已启动。${plain}"
+    echo "${ppp_name}已启动。"
     before_show_menu
 }
 
 stop_ppp() {
-    echo -e "停止${ppp_name}...${plain}"
+    echo "停止${ppp_name}..."
     docker_compose_action "down"
-    echo -e "${ppp_name}已停止。${plain}"
+    echo "${ppp_name}已停止。"
     before_show_menu
 }
 
 restart_ppp_update() {
-    echo -e "重启${ppp_name}...${plain}"
+    echo "重启${ppp_name}..."
     docker_compose_action "pull"
     docker_compose_action "up -d"
-    echo -e "${ppp_name}已重启。${plain}"
+    echo "${ppp_name}已重启。"
     docker image prune -f -a
     before_show_menu
 }
 
 show_ppp_log() {
-    echo -e ">> 正在获取${ppp_name}日志，正常启动则无日志"
+    echo "正在获取${ppp_name}日志，正常启动则无日志"
     docker_compose_action "logs -f"
     before_show_menu
 }
 
 uninstall_ppp() {
-    echo -e ">> 卸载${ppp_name}"
+    echo "卸载${ppp_name}"
     if [[ -d "${ppp_path}" ]]; then
         rm -rf "${ppp_path}"
-        echo -e "${ppp_path} 已删除。"
+        echo "${ppp_path} 已删除。"
     fi
     docker rm -f ${ppp_name} &>/dev/null
-    docker rmi -f $(docker images -q rebecca554owen/${ppp_name}) &>/dev/null || echo -e "Docker 镜像可能已被删除。"
+    docker rmi -f $(docker images -q rebecca554owen/${ppp_name}) &>/dev/null || echo "Docker 镜像可能已被删除。"
 
     # 获取PPP进程的PID
     pids=$(pgrep ppp)
@@ -184,32 +178,32 @@ uninstall_ppp() {
         echo "已发送终止信号到PPP进程。"
     fi
 
-    echo -e "${ppp_name}已卸载。"
+    echo "${ppp_name}已卸载。"
     before_show_menu
 }
 
 before_show_menu() {
-    echo -e "\n${yellow}* 按任意键返回主菜单 *${plain}"
+    echo "* 按任意键返回主菜单 *"
     read -r -n1 -s
-    echo -e
+    echo
     show_menu
 }
 
 show_menu() {
-    echo -e "
-    ${green}自用${ppp_name}脚本${plain} ${red}${plain}
+    echo "
+    自用${ppp_name}脚本
     ————————————————
-    ${green}1.${plain} 安装${ppp_name}
-    ${green}2.${plain} 修改${ppp_name}配置
-    ${green}3.${plain} 启动${ppp_name}
-    ${green}4.${plain} 停止${ppp_name}
-    ${green}5.${plain} 重启${ppp_name}
-    ${green}6.${plain} 查看${ppp_name}日志
-    ${green}7.${plain} 卸载${ppp_name}
+    1. 安装${ppp_name}
+    2. 修改${ppp_name}配置
+    3. 启动${ppp_name}
+    4. 停止${ppp_name}
+    5. 重启${ppp_name}
+    6. 查看${ppp_name}日志
+    7. 卸载${ppp_name}
     ————————————————
-    ${green}0.${plain} 退出脚本
+    0. 退出脚本
     "
-    echo -e && read -r -ep "请输入选择: " num
+    echo && read -r -ep "请输入选择: " num
     case ${num} in
         1) install_ppp ;;
         2) create_or_modify_ppp_config ;;
@@ -219,7 +213,7 @@ show_menu() {
         6) show_ppp_log ;;
         7) uninstall_ppp ;;
         0) exit 0 ;;
-        *) echo -e "${red}" "无效选择，请重新选择。${plain}" ;;
+        *) echo "无效选择，请重新选择。" ;;
     esac
     before_show_menu
 }
@@ -229,17 +223,17 @@ generate_ppp_docker_compose() {
     ppp_docker="${ppp_path}/docker-compose.yml"
     # 检查 ${ppp_docker} 文件是否存在
     if [ -f "${ppp_docker}" ]; then
-        echo -e "${yellow}" "检测到已存在的 ${ppp_docker} 配置文件。${plain}"
+        echo "检测到已存在的 ${ppp_docker} 配置文件。"
         read -p "是否要编辑现有的${ppp_docker}配置文件？[Y/n]: " input
         if [[ "$input" =~ ^[Yy]$ ]]; then
             # 用户选择编辑文件，使用 vim 打开文件
             vim "${ppp_docker}"
-            echo -e "${green}" "${ppp_docker}配置文件编辑完成。${plain}"
+            echo "${ppp_docker}配置文件编辑完成。"
             restart_ppp_update  # 完成编辑后的操作，重启容器
             return # 退出函数，不再执行生成新配置的逻辑
         fi
     fi
-    echo -e "${green}" "已经按 ${mode} 模式生成 ${ppp_docker}配置文件。${plain}" 
+    echo "已经按 ${mode} 模式生成 ${ppp_docker}配置文件。" 
     if [[ ${mode} == "server" ]]; then
     cat >"${ppp_docker}" <<EOF
 services:
@@ -280,20 +274,20 @@ EOF
 create_or_modify_ppp_config() {
     ppp_config="${ppp_path}/appsettings.json"
     if [ -f "${ppp_config}" ]; then
-        echo -e "${yellow}检测到已存在${ppp_config}配置文件。${plain}"
+        echo "检测到已存在${ppp_config}配置文件。"
         read -p "是否要编辑现有的配置文件？[Y/n]: " edit_choice
         if [[ $edit_choice =~ ^[Yy]$ ]]; then
             vim "${ppp_config}"
-            echo -e "${green}${ppp_config}配置文件修改成功。${plain}"
+            echo "${ppp_config}配置文件修改成功。"
             restart_ppp_update
             return
         else
-        echo -e "${green}不修改${ppp_config}配置文件。${plain}"
+        echo "不修改${ppp_config}配置文件。"
         return
         fi
     else
     # 如果配置文件不存在，则重新生成配置文件
-    echo -e "${yellow}重新生成${ppp_config}。${plain}"
+    echo "重新生成${ppp_config}。"
     # 检测公网出口/内网IP来提示用户
     curl -m 10 -s ip.sb
     ip addr | grep 'inet ' | grep -v ' lo' | awk '{print $2}' | cut -d/ -f1
@@ -309,7 +303,7 @@ create_or_modify_ppp_config() {
     concurrent=$(nproc)
     random_guid=$(uuidgen)
     
-    echo -e "${yellow} 节点 ${vps_ip}:${port} 线程数 ${concurrent} 用户ID ${random_guid} ${plain}"
+    echo " 节点 ${vps_ip}:${port} 线程数 ${concurrent} 用户ID ${random_guid}"
     
     cat >"${ppp_config}" <<EOF
 {
@@ -442,7 +436,7 @@ create_or_modify_ppp_config() {
 }
 EOF
     fi
-    echo -e "${green}${ppp_config}配置文件生成成功。${plain}"
+    echo "${ppp_config}配置文件生成成功。"
     restart_ppp_update
 }
 

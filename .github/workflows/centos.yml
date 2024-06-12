@@ -8,7 +8,15 @@ on:
 
 jobs:
   build:
-    runs-on: self-hosted
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [CentOS7] # ubuntu-22.04, ubuntu-20.04, ubuntu-18.04
+        arch: [amd64] # ${{ runner.arch }}
+        platform: 
+          - linux/amd64
+
+    runs-on: ${{ matrix.os }}
     env:
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 

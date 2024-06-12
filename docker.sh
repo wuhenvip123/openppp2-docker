@@ -72,10 +72,11 @@ while true; do
     echo "4. 重启容器"
     echo "5. 更新容器镜像"
     echo "6. 清空无用的镜像"
-    echo "7. 退出"
+    echo "7. 查看容器日志"
+    echo "8. 退出"
     read -p "输入数字选择操作：" choice
 
-    if [[ -z "$selected_container" && $choice -ne 1 && $choice -ne 7 ]]; then
+    if [[ -z "$selected_container" && $choice -ne 1 && $choice -ne 8 ]]; then
         echo "请先选择一个容器。"
         select_container
         if [[ $? -ne 0 ]]; then
@@ -143,6 +144,14 @@ while true; do
             fi
             ;;
         7)
+            docker logs $selected_container
+            if [[ $? -eq 0 ]]; then
+                echo "容器日志查看成功。"
+            else
+                echo "容器日志查看失败。"
+            fi
+            ;;
+        8)
             echo "退出脚本。"
             exit 0
             ;;

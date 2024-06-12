@@ -31,12 +31,11 @@ select_container() {
         echo "没有找到容器。"
     else
         echo "所有容器："
-        for i in "${!containers[@]}"; do
+        for ((i=0; i<${#containers[@]}; i+=2)); do
             echo "$((i/2+1)). ID: ${containers[i]} 名称: ${containers[i+1]}"
-            ((i++))
         done
         read -p "输入要选择的容器序号：" container_index
-        if [ $container_index -gt 0 ] && [ $container_index -le $(( ${#containers[@]} / 2 )) ]; then
+        if [[ $container_index =~ ^[0-9]+$ ]] && [ $container_index -gt 0 ] && [ $container_index -le $(( ${#containers[@]} / 2 )) ]; then
             selected_container=${containers[((container_index-1)*2)]}
             echo "选中的容器: $selected_container"
         else

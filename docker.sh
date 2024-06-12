@@ -3,7 +3,7 @@
 # 检查是否安装了Docker
 if ! command -v docker &> /dev/null
 then
-    echo "Docker未安装。是否安装Docker？(默认: yes)"
+    echo "Docker未安装，是否安装Docker？( yes / no ) 回车默认安装。"
     read install_docker
     if [[ "$install_docker" == "NO" || "$install_docker" == "no" || "$install_docker" == "N" || "$install_docker" == "n" ]]; then
         echo "未安装Docker，脚本退出。"

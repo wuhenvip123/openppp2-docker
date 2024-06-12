@@ -71,8 +71,6 @@ check_status() {
     net_qdisc_sysctl=$(sysctl net.core.default_qdisc | awk '{print $3}')
     # 使用 /proc 文件系统查询默认队列规则
     net_qdisc_proc=$(cat /proc/sys/net/core/default_qdisc)
-    # 使用 tc 命令查询当前队列规则
-    net_qdisc_tc=$(tc qdisc show | grep "qdisc" | awk '{print $2}')
     
     echo "当前系统信息:"
     echo "操作系统版本: $os_version"

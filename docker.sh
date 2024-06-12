@@ -3,9 +3,13 @@
 # 检查是否安装了Docker
 if ! command -v docker &> /dev/null
 then
-    echo "Docker未安装。是否安装Docker？(yes/no)"
+    echo "Docker未安装。是否安装Docker？(默认: yes)"
     read install_docker
-    if [ "$install_docker" == "yes" ]; then
+    if [[ "$install_docker" == "NO" || "$install_docker" == "no" || "$install_docker" == "N" || "$install_docker" == "n" ]]; then
+        echo "未安装Docker，脚本退出。"
+        exit 1
+    else
+        echo "正在安装Docker..."
         curl -fsSL https://get.docker.com -o get-docker.sh
         sh get-docker.sh
         if [ $? -ne 0 ]; then
@@ -13,9 +17,6 @@ then
             exit 1
         fi
         echo "Docker安装成功。"
-    else
-        echo "未安装Docker，脚本退出。"
-        exit 1
     fi
 fi
 

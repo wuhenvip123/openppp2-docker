@@ -3,7 +3,7 @@
 # 检测内核版本是否支持 BBR3
 check_kernel_for_bbr3() {
     local kernel_version=$(uname -r | cut -d- -f1)
-    if [[ $(echo $kernel_version | awk -F. '{print ($1 * 1000 + $2 * 10 + $3)}') -lt 5100 ]]; then
+    if [[ $(echo $kernel_version | awk -F. '{print ($1 * 1000 + $2 * 10 + $3)}') -lt 6010 ]]; then
         echo "0"
     else
         echo "1"

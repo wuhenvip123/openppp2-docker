@@ -71,9 +71,9 @@ EOF
     # 应用系统配置
     sysctl -p
     sysctl --system
-    echo "优化配置已应用。建议重启以生效。是否现在重启? (y/n)"
-    read answer
-    if [ "$answer" != "${answer#[Yy]}" ]; then
+    echo "优化配置已应用。建议重启以生效。是否现在重启? (默认: Y/n)"
+    read -p "输入选项: " answer
+    if [ -z "$answer" ] || [[ ! "$answer" =~ ^[Nn][Oo]?$ ]]; then
         reboot
     fi
 }
@@ -82,9 +82,9 @@ EOF
 clear_sysctl() {
     echo "" > /etc/sysctl.conf
     sysctl -p
-    echo "优化配置已清除。建议重启以生效。是否现在重启? (y/n)"
-    read answer
-    if [ "$answer" != "${answer#[Yy]}" ]; then
+    echo "优化配置已清除。建议重启以生效。是否现在重启? (默认: Y/n)"
+    read -p "输入选项: " answer
+    if [ -z "$answer" ] || [[ ! "$answer" =~ ^[Nn][Oo]?$ ]]; then
         reboot
     fi
 }

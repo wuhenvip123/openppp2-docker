@@ -27,6 +27,7 @@ clear_sysctl_conf() {
     clear
     rm -f /etc/sysctl.d/*.conf
     rm -f /usr/lib/sysctl.d/*.conf
+    cat /dev/null > /etc/sysctl.conf
 }
 
 # 清理 sysctl 配置，不提示重启
@@ -157,7 +158,7 @@ optimize_system() {
 write_sysctl_conf() {
     local congestion_control=$1
     local qdisc=$2
-    cat > /etc/sysctl.d/99-sysctl.conf << EOF
+    cat > /etc/sysctl.conf << EOF
 # 系统文件描述符限制，设置最大文件描述符数量
 fs.file-max = $((1024 * 1024))
 
@@ -192,6 +193,9 @@ net.ipv4.tcp_abort_on_overflow = 1
 net.ipv4.tcp_max_syn_backlog = 8192
 net.ipv4.tcp_max_tw_buckets = 55000
 
+# 启用 TCP ECN
+net.ipv4.tcp_ecn = 1
+
 # IP 转发配置
 net.ipv4.ip_forward = 1
 net.ipv4.conf.all.forwarding = 1
@@ -217,6 +221,9 @@ net.ipv4.tcp_congestion_control = $congestion_control
 # 设置默认队列规则
 net.core.default_qdisc = $qdisc
 EOF
+
+    # 将配置复制到 /etc/sysctl.d/99-sysctl.conf
+    cp /etc/sysctl.conf /etc/sysctl.d/99-sysctl.conf
 }
 
 # 启动菜单

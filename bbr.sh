@@ -3,12 +3,12 @@
 # 检查并加载 TCP 队列规则
 check_and_load_module() {
     local qdisc=$1
-    if ! sysctl net.core.default_qdisc | grep -qw $qdisc; then
+    if ! sysctl net.core.default_qdisc | grep -w $qdisc; then
         echo "尝试加载 $qdisc 模块..."
-        if ! lsmod | grep -qw "$qdisc"; then
+        if ! lsmod | grep -w "$qdisc"; then
             modprobe $qdisc 2>/dev/null
         fi
-        if ! sysctl net.core.default_qdisc | grep -qw $qdisc; then
+        if ! sysctl net.core.default_qdisc | grep -w $qdisc; then
             echo "错误: 队列规则 $qdisc 不可用。"
             return 1
         fi

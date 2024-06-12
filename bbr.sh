@@ -3,12 +3,12 @@
 # 检查并加载 TCP 拥塞控制算法模块
 check_and_load_module() {
     local qdisc=$1
-    if ! sysctl net.ipv4.tcp_available_congestion_control | grep -qw $qdisc; then
+    if ! sysctl net.ipv4.tcp_available_congestion_control | grep -w $qdisc; then
         echo "尝试加载 $qdisc 模块..."
-        if ! lsmod | grep -qw "tcp_$qdisc"; then
+        if ! lsmod | grep -w "tcp_$qdisc"; then
             modprobe tcp_$qdisc 2>/dev/null
         fi
-        if ! sysctl net.ipv4.tcp_available_congestion_control | grep -qw $qdisc; then
+        if ! sysctl net.ipv4.tcp_available_congestion_control | grep -w $qdisc; then
             echo "错误: 拥塞控制算法 $qdisc 不可用。"
             return 1
         fi

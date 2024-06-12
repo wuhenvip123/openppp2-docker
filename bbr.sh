@@ -158,7 +158,7 @@ menu() {
     echo "请选择优化方案:"
     echo "1) 启用优化方案 bbr+fq"
     echo "2) 启用优化方案 bbr+fq_pie"
-    echo "3) 启用优化方案 bbr+cake"
+    echo "3) 启用优化方案 bbr+cake (推荐)"
     echo "4) 清理优化"
     echo "5) 退出"
     read -p "输入选项: " option

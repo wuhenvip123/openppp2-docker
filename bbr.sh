@@ -19,7 +19,7 @@ apply_sysctl() {
     set_ulimit
 
     echo "优化配置已应用。建议重启以生效。是否现在重启? 回车默认重启"
-    read -p "输入选项: ( Y/n )" answer
+    read -p "输入选项: (Y/n) " answer
     if [ -z "$answer" ] || [[ ! "$answer" =~ ^[Nn][Oo]?$ ]]; then
         reboot
     fi
@@ -68,7 +68,7 @@ check_status() {
 
 # 获取可用的拥塞控制算法
 get_available_congestion_controls() {
-    sysctl net.ipv4.tcp_available_congestion_control | awk -F "=" '{print $2}' | tr -d ' '
+    sysctl net.ipv4.tcp_available_congestion_control | awk -F "=" '{print $2}' | tr -d ' ' | tr ' ' '\n'
 }
 
 # 菜单选项

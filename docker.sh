@@ -20,6 +20,7 @@ then
 fi
 
 selected_container=""
+containers=()
 
 # 显示操作菜单
 while true; do
@@ -28,7 +29,7 @@ while true; do
     else
         echo "当前没有选中的容器。"
     fi
-    
+
     echo "请选择操作："
     echo "1. 列出所有容器"
     echo "2. 选择容器"
@@ -42,12 +43,28 @@ while true; do
 
     case $choice in
         1)
-            docker ps -a
+            containers=($(docker ps -a --format "{{.ID}} {{.Names}}"))
+            if [ ${#containers[@]} -eq 0 ]; then
+                echo "没有找到容器。"
+            else
+                echo "所有容器："
+                for i in "${!containers[@]}"; do
+                    echo "$((i/2+1)). ID: ${containers[i]} 名称: ${containers[i+1]}"
+                    ((i++))
+                done
+            fi
             ;;
         2)
-            echo "所有容器："
-            docker ps -a --format "table {{.ID}}\t{{.Names}}"
-            read -p "输入要选择的容器ID或名称：" selected_container
+            if [ ${#containers[@]} -eq 0 ]; then
+                echo "请先列出容器。"
+            else
+                read -p "输入要选择的容器序号：" container_index
+                if [ $container_index -gt 0 ] && [ $container_index -le $(( ${#containers[@]} / 2 )) ]; then
+                    selected_container=${containers[((container_index-1)*2)]}
+                else
+                    echo "无效的序号。"
+                fi
+            fi
             ;;
         3)
             if [ -n "$selected_container" ]; then

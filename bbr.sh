@@ -80,7 +80,7 @@ EOF
         echo "session required pam_limits.so" >> /etc/pam.d/common-session
     fi
 
-    echo "优化配置已应用。建议重启以生效。是否现在重启? (默认: Y/n)"
+    echo "优化配置已应用。建议重启以生效。是否现在重启? 回车默认重启 ( Yes / no )"
     read -p "输入选项: " answer
     if [ -z "$answer" ] || [[ ! "$answer" =~ ^[Nn][Oo]?$ ]]; then
         reboot

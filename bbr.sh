@@ -1,7 +1,25 @@
 #!/bin/bash
 
+# 检查并加载 TCP 拥塞控制算法模块
+check_and_load_module() {
+    local qdisc=$1
+    if ! sysctl net.ipv4.tcp_available_congestion_control | grep -qw $qdisc; then
+        echo "尝试加载 $qdisc 模块..."
+        modprobe tcp_$qdisc 2>/dev/null
+        if ! sysctl net.ipv4.tcp_available_congestion_control | grep -qw $qdisc; then
+            echo "错误: 拥塞控制算法 $qdisc 不可用。"
+            return 1
+        fi
+    fi
+    echo "拥塞控制算法 $qdisc 可用。"
+    return 0
+}
+
 # 应用 sysctl 配置
 apply_sysctl() {
+
+    check_and_load_module
+    
     local qdisc=$1
 
     # 先清除现有配置

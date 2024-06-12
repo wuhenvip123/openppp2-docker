@@ -17,11 +17,8 @@ check_and_load_module() {
 
 # 应用 sysctl 配置
 apply_sysctl() {
-
-    check_and_load_module
-    
     local qdisc=$1
-
+    check_and_load_module
     # 先清除现有配置
     clear_sysctl_conf
 

@@ -1,19 +1,8 @@
 #!/bin/bash
 
-# 检测内核版本是否支持 BBR3
-check_kernel_for_bbr3() {
-    local kernel_version=$(uname -r | cut -d- -f1)
-    if [[ $(echo $kernel_version | awk -F. '{print ($1 * 1000 + $2 * 10 + $3)}') -lt 6010 ]]; then
-        echo "0"
-    else
-        echo "1"
-    fi
-}
-
 # 应用 sysctl 配置
 apply_sysctl() {
-    local congestion_control=$1
-    local qdisc=$2
+    local qdisc=$1
     cat > /etc/sysctl.conf << EOF
 # 系统文件描述符限制
 fs.file-max = 1048575
@@ -46,7 +35,7 @@ net.ipv4.tcp_fin_timeout = 10
 net.ipv4.tcp_abort_on_overflow = 1
 net.ipv4.tcp_max_syn_backlog = 8192
 net.ipv4.tcp_max_tw_buckets = 55000
-net.ipv4.tcp_congestion_control = $congestion_control
+net.ipv4.tcp_congestion_control = bbr
 
 # IP转发
 net.ipv4.ip_forward = 1
@@ -112,45 +101,26 @@ clear_sysctl() {
 # 菜单选项
 menu() {
     echo "请选择优化方案:"
-    local support_bbr3=$(check_kernel_for_bbr3)
-    if [[ $support_bbr3 -eq 1 ]]; then
-        echo "1) 启用优化方案 bbr+fq"
-        echo "2) 启用优化方案 bbr+fq_pie"
-        echo "3) 启用优化方案 bbr+cake"
-        echo "4) 启用优化方案 bbr3+fq"
-        echo "5) 启用优化方案 bbr3+fq_pie"
-        echo "6) 启用优化方案 bbr3+cake"
-    else
-        echo "1) 启用优化方案 bbr+fq"
-        echo "2) 启用优化方案 bbr+fq_pie"
-        echo "3) 启用优化方案 bbr+cake"
-    fi
-    echo "7) 清理优化"
-    echo "8) 退出"
+    echo "1) 启用优化方案 bbr+fq"
+    echo "2) 启用优化方案 bbr+fq_pie"
+    echo "3) 启用优化方案 bbr+cake"
+    echo "4) 清理优化"
+    echo "5) 退出"
     read -p "输入选项: " option
     case $option in
         1)
-            apply_sysctl "bbr" "fq"
+            apply_sysctl "fq"
             ;;
         2)
-            apply_sysctl "bbr" "fq_pie"
+            apply_sysctl "fq_pie"
             ;;
         3)
-            apply_sysctl "bbr" "cake"
+            apply_sysctl "cake"
             ;;
         4)
-            [[ $support_bbr3 -eq 1 ]] && apply_sysctl "bbr3" "fq"
-            ;;
-        5)
-            [[ $support_bbr3 -eq 1 ]] && apply_sysctl "bbr3" "fq_pie"
-            ;;
-        6)
-            [[ $support_bbr3 -eq 1 ]] && apply_sysctl "bbr3" "cake"
-            ;;
-        7)
             clear_sysctl
             ;;
-        8)
+        5)
             exit 0
             ;;
         *)

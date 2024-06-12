@@ -72,7 +72,6 @@ net.core.optmem_max = 65536  # 设置每个套接字的最大可选内存
 net.ipv4.tcp_syncookies = 0  # 禁用 syncookies 洪水攻击保护
 net.ipv4.tcp_tw_reuse = 1  # 允许复用 TIME-WAIT sockets 用于新的 TCP 连接
 net.ipv4.tcp_timestamps = 0  # 禁用 TCP 时间戳
-net.ipv4.tcp_tw_recycle = 0  # 禁用 TCP 时间戳回收
 net.ipv4.tcp_rmem = 4096 87380 $((64 * 1024 * 1024))  # 设置 TCP 接收缓冲区
 net.ipv4.tcp_wmem = 4096 65536 $((64 * 1024 * 1024))  # 设置 TCP 发送缓冲区
 net.ipv4.tcp_fastopen = 3  # 开启 TCP Fast Open
@@ -110,7 +109,7 @@ vm.swappiness = 10  # 设置虚拟内存交换使用率
 vm.overcommit_memory = 1  # 允许内存过度分配
 
 # 设置 TCP 拥塞控制算法
-net.ipv4.tcp_congestion_control = $qdisc  # 设置 TCP 拥塞控制算法
+net.ipv4.tcp_congestion_control = bbr  # 设置 TCP 拥塞控制算法
 # 设置默认队列规则
 net.core.default_qdisc = $qdisc  # 设置默认队列规则
 EOF

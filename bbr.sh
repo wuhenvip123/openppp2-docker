@@ -63,19 +63,24 @@ check_status() {
     os_version=$(cat /etc/os-release | grep "PRETTY_NAME" | cut -d '=' -f2 | tr -d '"')
     
     # 使用 sysctl 命令查询 TCP 拥塞控制算法
-    net_congestion_control=$(sysctl net.ipv4.tcp_congestion_control | awk '{print $3}')
+    net_congestion_control_sysctl=$(sysctl net.ipv4.tcp_congestion_control | awk '{print $3}')
+    # 使用 /proc 文件系统查询 TCP 拥塞控制算法
+    net_congestion_control_proc=$(cat /proc/sys/net/ipv4/tcp_congestion_control)
     
     # 使用 sysctl 命令查询默认队列规则
     net_qdisc_sysctl=$(sysctl net.core.default_qdisc | awk '{print $3}')
-    
+    # 使用 /proc 文件系统查询默认队列规则
+    net_qdisc_proc=$(cat /proc/sys/net/core/default_qdisc)
     # 使用 tc 命令查询当前队列规则
     net_qdisc_tc=$(tc qdisc show | grep "qdisc" | awk '{print $2}')
     
     echo "当前系统信息:"
     echo "操作系统版本: $os_version"
     echo "内核版本: $kernel_version_full"
-    echo "TCP 拥塞控制算法: $net_congestion_control"
+    echo "TCP 拥塞控制算法 (sysctl): $net_congestion_control_sysctl"
+    echo "TCP 拥塞控制算法 (proc): $net_congestion_control_proc"
     echo "默认队列规则 (sysctl): $net_qdisc_sysctl"
+    echo "默认队列规则 (proc): $net_qdisc_proc"
     echo "当前队列规则 (tc): $net_qdisc_tc"
 }
 

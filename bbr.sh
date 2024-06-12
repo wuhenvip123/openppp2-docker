@@ -92,9 +92,7 @@ menu() {
     echo "请选择优化方案:"
     local support_bbr3=$(check_kernel_for_bbr3)
     if [[ $support_bbr3 -eq 1 ]]; then
-        echo "1) 启用优化方案
-
- bbr+fq"
+        echo "1) 启用优化方案 bbr+fq"
         echo "2) 启用优化方案 bbr+fq-pie"
         echo "3) 启用优化方案 bbr+cake"
         echo "4) 启用优化方案 bbr3+fq"

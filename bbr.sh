@@ -12,6 +12,7 @@ apply_sysctl() {
     write_sysctl_conf $congestion_control $qdisc
 
     # 应用系统配置
+    clear
     sysctl -p
     sysctl --system
 

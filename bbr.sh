@@ -96,8 +96,7 @@ menu() {
     echo "============================"
     echo "1. 启用优化"
     echo "2. 清理优化"
-    echo "3. 显示系统信息"
-    echo "4. 退出"
+    echo "3. 退出"
     echo "============================"
     read -p "请选择一个选项: " choice
     case $choice in
@@ -109,9 +108,6 @@ menu() {
             echo "系统优化已清理。"
             ;;
         3)
-            check_status
-            ;;
-        4)
             exit 0
             ;;
         *)

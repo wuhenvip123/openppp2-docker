@@ -3,17 +3,37 @@
 # 应用 sysctl 配置
 apply_sysctl() {
     local qdisc=$1
+
+    write_sysctl_conf $qdisc
+
+    # 应用系统配置
+    sysctl -p
+    sysctl --system
+
+    # 调用 ulimit 配置函数
+    set_ulimit
+
+    echo "优化配置已应用。建议重启以生效。是否现在重启? 回车默认重启"
+    read -p "输入选项: ( Y/n )" answer
+    if [ -z "$answer" ] || [[ ! "$answer" =~ ^[Nn][Oo]?$ ]]; then
+        reboot
+    fi
+}
+
+# 写 sysctl 配置文件
+write_sysctl_conf() {
+    local qdisc=$1
     cat > /etc/sysctl.conf << EOF
 # 系统文件描述符限制，设置最大文件描述符数量
-fs.file-max = 1048575
+fs.file-max = $((1024 * 1024))
 # 设置每个用户实例的 inotify 实例数量上限
 fs.inotify.max_user_instances = 8192
 
 # 网络核心配置
 # 设置最大接收缓冲区大小
-net.core.rmem_max = 67108864
+net.core.rmem_max = $((64 * 1024 * 1024))
 # 设置最大发送缓冲区大小
-net.core.wmem_max = 67108864
+net.core.wmem_max = $((64 * 1024 * 1024))
 # 设置接收队列的最大长度
 net.core.netdev_max_backlog = 100000
 # 设置最大连接数
@@ -30,9 +50,9 @@ net.ipv4.tcp_syncookies = 0
 # 允许复用 TIME-WAIT sockets 用于新的 TCP 连接
 net.ipv4.tcp_tw_reuse = 1
 # 设置 TCP 接收缓冲区
-net.ipv4.tcp_rmem = 4096 87380 67108864
+net.ipv4.tcp_rmem = 4096 87380 $((64 * 1024 * 1024))
 # 设置 TCP 发送缓冲区
-net.ipv4.tcp_wmem = 4096 65536 67108864
+net.ipv4.tcp_wmem = 4096 65536 $((64 * 1024 * 1024))
 # 开启 TCP Fast Open
 net.ipv4.tcp_fastopen = 3
 # 开启 TCP 窗口扩展
@@ -89,17 +109,16 @@ vm.swappiness = 10
 # 允许内存过度分配
 vm.overcommit_memory = 1
 EOF
+}
 
-    # 应用系统配置
-    sysctl -p
-    sysctl --system
-
+# 设置 ulimit 配置
+set_ulimit() {
     # 设置文件描述符限制
     cat > /etc/security/limits.conf << EOF
 # 为所有用户设置软文件描述符限制
-* soft nofile 1048575
+* soft nofile $((1024 * 1024))
 # 为所有用户设置硬文件描述符限制
-* hard nofile 1048575
+* hard nofile $((1024 * 1024))
 # 为所有用户设置软进程数限制
 * soft nproc unlimited
 # 为所有用户设置硬进程数限制
@@ -113,18 +132,12 @@ EOF
     # 设置 ulimit
     sed -i '/ulimit -SHn/d' /etc/profile
     # 设置当前会话的最大文件描述符数
-    echo "ulimit -SHn 1048575" >> /etc/profile
+    echo "ulimit -SHn $((1024 * 1024))" >> /etc/profile
 
     # 确保 PAM 限制模块被正确加载
     if ! grep -q "pam_limits.so" /etc/pam.d/common-session; then
         # 在 common-session 文件中添加 pam_limits.so
         echo "session required pam_limits.so" >> /etc/pam.d/common-session
-    fi
-
-    echo "优化配置已应用。建议重启以生效。是否现在重启? 回车默认重启"
-    read -p "输入选项: ( Y/n )" answer
-    if [ -z "$answer" ] || [[ ! "$answer" =~ ^[Nn][Oo]?$ ]]; then
-        reboot
     fi
 }
 

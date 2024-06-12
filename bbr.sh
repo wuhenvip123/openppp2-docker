@@ -71,6 +71,26 @@ EOF
     # 应用系统配置
     sysctl -p
     sysctl --system
+
+    # 设置文件描述符限制
+    cat > /etc/security/limits.conf << EOF
+* soft nofile 1048575
+* hard nofile 1048575
+* soft nproc unlimited
+* hard nproc unlimited
+* soft core unlimited
+* hard core unlimited
+EOF
+
+    # 设置 ulimit
+    sed -i '/ulimit -SHn/d' /etc/profile
+    echo "ulimit -SHn 1048575" >> /etc/profile
+
+    # 确保 PAM 限制模块被正确加载
+    if ! grep -q "pam_limits.so" /etc/pam.d/common-session; then
+        echo "session required pam_limits.so" >> /etc/pam.d/common-session
+    fi
+
     echo "优化配置已应用。建议重启以生效。是否现在重启? (默认: Y/n)"
     read -p "输入选项: " answer
     if [ -z "$answer" ] || [[ ! "$answer" =~ ^[Nn][Oo]?$ ]]; then

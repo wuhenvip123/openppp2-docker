@@ -60,10 +60,12 @@ EOF
 check_status() {
     kernel_version=$(uname -r | awk -F "-" '{print $1}')
     kernel_version_full=$(uname -r)
+    os_version=$(cat /etc/os-release | grep "PRETTY_NAME" | cut -d '=' -f2 | tr -d '"')
     net_congestion_control=$(cat /proc/sys/net/ipv4/tcp_congestion_control)
     net_qdisc=$(cat /proc/sys/net/core/default_qdisc)
     
     echo "当前系统信息:"
+    echo "操作系统版本: $os_version"
     echo "内核版本: $kernel_version_full"
     echo "TCP 拥塞控制算法: $net_congestion_control"
     echo "默认队列规则: $net_qdisc"
@@ -76,6 +78,9 @@ get_available_congestion_controls() {
 
 # 菜单选项
 menu() {
+    clear
+    echo "============================"
+    check_status
     echo "============================"
     echo "  系统优化菜单  "
     echo "============================"

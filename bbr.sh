@@ -1,29 +1,52 @@
 #!/bin/bash
 
-# 检查并加载 TCP 队列规则
+# 检查并加载 TCP 队列规则和拥塞控制算法
 check_and_load_module() {
     local qdisc=$1
+    local congestion_control=$2
+
+    local qdisc_available=true
+    local congestion_control_available=true
+
     if ! sysctl net.core.default_qdisc | grep -w $qdisc; then
         echo "尝试使用 $qdisc 队列规则..."
         if ! lsmod | grep -w "$qdisc"; then
             modprobe $qdisc 2>/dev/null
         fi
         if ! sysctl net.core.default_qdisc | grep -w $qdisc; then
-            echo "错误: 队列规则 $qdisc 不可用。"
-            return 1
+            echo "警告: 队列规则 $qdisc 不可用。"
+            qdisc_available=false
         fi
     fi
     echo "队列规则 $qdisc 可用。"
+
+    if ! sysctl net.ipv4.tcp_congestion_control | grep -w $congestion_control; then
+        echo "尝试使用 $congestion_control 拥塞控制算法..."
+        if ! lsmod | grep -w "$congestion_control"; then
+            modprobe $congestion_control 2>/dev/null
+        fi
+        if ! sysctl net.ipv4.tcp_congestion_control | grep -w $congestion_control; then
+            echo "警告: 拥塞控制算法 $congestion_control 不可用。"
+            congestion_control_available=false
+        fi
+    fi
+    echo "拥塞控制算法 $congestion_control 可用。"
+
+    if [ "$qdisc_available" = false ] || [ "$congestion_control_available" = false ]; then
+        return 1
+    fi
+
     return 0
 }
 
-
 # 应用 sysctl 配置
 apply_sysctl() {
-    local qdisc=$1
-    check_and_load_module $qdisc
+    local congestion_control=$1
+    local qdisc=$2
+
+    check_and_load_module $qdisc $congestion_control
     if [ $? -ne 0 ]; then
-        echo "无法加载 $qdisc 模块，退出。"
+        echo "无法加载 $qdisc 或 $congestion_control 模块，退出。"
         return 1
     fi
 
@@ -31,7 +54,7 @@ apply_sysctl() {
     clear_sysctl_conf
 
     # 写入新的配置
-    write_sysctl_conf $qdisc
+    write_sysctl_conf $congestion_control $qdisc
 
     # 应用系统配置
     sysctl -p
@@ -54,7 +77,8 @@ clear_sysctl_conf() {
 
 # 写 sysctl 配置文件
 write_sysctl_conf() {
-    local qdisc=$1
+    local congestion_control=$1
+    local qdisc=$2
     cat >> /etc/sysctl.conf << EOF
 # 系统文件描述符限制，设置最大文件描述符数量
 fs.file-max = $((1024 * 1024))  # 设置最大文件描述符数量
@@ -110,7 +134,7 @@ vm.swappiness = 10  # 设置虚拟内存交换使用率
 vm.overcommit_memory = 1  # 允许内存过度分配
 
 # 设置 TCP 拥塞控制算法
-net.ipv4.tcp_congestion_control = bbr  # 设置 TCP 拥塞控制算法
+net.ipv4.tcp_congestion_control = $congestion_control  # 设置 TCP 拥塞控制算法
 # 设置默认队列规则
 net.core.default_qdisc = $qdisc  # 设置默认队列规则
 EOF
@@ -152,42 +176,40 @@ check_status() {
     echo "默认队列规则: $net_qdisc"
 }
 
+# 获取可用的拥塞控制算法
+get_available_congestion_controls() {
+    sysctl net.ipv4.tcp_available_congestion_control | awk -F "=" '{print $2}' | tr -d ' '
+}
+
 # 菜单选项
 menu() {
     check_status
-    echo "请选择优化方案:"
-    echo "1) 启用优化方案 bbr+fq"
-    echo "2) 启用优化方案 bbr+fq_pie"
-    echo "3) 启用优化方案 bbr+cake (推荐)"
-    echo "4) 清理优化"
-    echo "5) 退出"
-    read -p "输入选项: " option
-    case $option in
-        1)
-            apply_sysctl "fq"
-            ;;
-        2)
-            apply_sysctl "fq_pie"
-            ;;
-        3)
-            apply_sysctl "cake"
-            ;;
-        4)
-            clear_sysctl
-            echo "优化配置已清除。建议重启以生效。是否现在重启? 回车默认重启"
-            read -p "输入选项: ( Y/n )" answer
-            if [ -z "$answer" ] || [[ ! "$answer" =~ ^[Nn][Oo]?$ ]]; then
-                reboot
-            fi
-            ;;
-        5)
-            exit 0
-            ;;
-        *)
+
+    local available_congestion_controls=$(get_available_congestion_controls)
+    local queue_disciplines=("fq" "fq_pie" "cake")
+
+    echo "可用的拥塞控制算法:"
+    PS3="请选择拥塞控制算法: "
+    select congestion_control in $available_congestion_controls; do
+        if [ -n "$congestion_control" ]; then
+            break
+        else
             echo "无效选项，请重新选择。"
-            menu
-            ;;
-    esac
+        fi
+    done
+
+    echo "可用的队列规则:"
+    PS3="请选择队列规则: "
+    select qdisc in "${queue_disciplines[@]}"; do
+        if [ -n "$qdisc" ]; then
+            break
+        else
+            echo "无效选项，请重新选择。"
+        fi
+    done
+
+    echo "您选择了: 拥塞控制算法 $congestion_control 和队列规则 $qdisc"
+    apply_sysctl $congestion_control $qdisc
 }
 
 menu

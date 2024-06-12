@@ -7,36 +7,34 @@ apply_sysctl() {
 
     # 清屏、清除现有配置
     clear
-    rm -f /etc/sysctl.d/*.conf
-    rm -f /usr/lib/sysctl.d/*.conf
     clear_sysctl_conf
 
     # 写入新的配置
     write_sysctl_conf $congestion_control $qdisc
 
     # 应用系统配置
-    sysctl -p
     sysctl --system
 
     # 调用 ulimit 配置函数
     set_ulimit
 
     echo "优化配置已应用。建议重启以生效。是否现在重启? 回车默认重启"
-    read -p "输入选项: (Y/n) " answer
-    if [ -z "$answer" ] || [[ ! "$answer" =~ ^[Nn][Oo]?$ ]]; then
-        reboot
-    fi
+    prompt_reboot
 }
 
-# 清空 sysctl 配置，不弹出提示
+# 清屏、清除现有配置
 clear_sysctl_conf() {
-    cat /dev/null >/etc/sysctl.conf
+    clear
+    rm -f /etc/sysctl.d/*.conf
+    rm -f /usr/lib/sysctl.d/*.conf
 }
 
 # 清理 sysctl 配置，不提示重启
 clear_sysctl() {
     clear_sysctl_conf
-    sysctl -p
+    sysctl --system
+    echo "系统优化已清理。建议重启以生效。是否现在重启? 回车默认重启"
+    prompt_reboot
 }
 
 # 设置 ulimit 配置
@@ -86,6 +84,14 @@ get_available_congestion_controls() {
     sysctl net.ipv4.tcp_available_congestion_control | awk -F "=" '{print $2}' | tr ' ' '\n'
 }
 
+# 提示重启
+prompt_reboot() {
+    read -p "输入选项: (Y/n) " answer
+    if [ -z "$answer" ] || [[ ! "$answer" =~ ^[Nn][Oo]?$ ]]; then
+        reboot
+    fi
+}
+
 # 菜单选项
 menu() {
     clear
@@ -105,7 +111,6 @@ menu() {
             ;;
         2)
             clear_sysctl
-            echo "系统优化已清理。"
             ;;
         3)
             exit 0
@@ -152,7 +157,7 @@ optimize_system() {
 write_sysctl_conf() {
     local congestion_control=$1
     local qdisc=$2
-    cat >> /etc/sysctl.conf << EOF
+    cat > /etc/sysctl.d/99-sysctl.conf << EOF
 # 系统文件描述符限制，设置最大文件描述符数量
 fs.file-max = $((1024 * 1024))
 

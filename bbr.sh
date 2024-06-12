@@ -149,13 +149,13 @@ menu() {
     read -p "输入选项: " option
     case $option in
         1)
-            apply_sysctl "bbr" && apply_sysctl "fq"
+            apply_sysctl "fq"
             ;;
         2)
-            apply_sysctl "bbr" && apply_sysctl "fq_pie"
+            apply_sysctl "fq_pie"
             ;;
         3)
-            apply_sysctl "bbr" && apply_sysctl "cake"
+            apply_sysctl "cake"
             ;;
         4)
             clear_sysctl

@@ -138,8 +138,22 @@ clear_sysctl() {
     sysctl -p
 }
 
+# 显示系统信息
+check_status() {
+    kernel_version=$(uname -r | awk -F "-" '{print $1}')
+    kernel_version_full=$(uname -r)
+    net_congestion_control=$(cat /proc/sys/net/ipv4/tcp_congestion_control)
+    net_qdisc=$(cat /proc/sys/net/core/default_qdisc)
+    
+    echo "当前系统信息:"
+    echo "内核版本: $kernel_version_full"
+    echo "TCP 拥塞控制算法: $net_congestion_control"
+    echo "默认队列规则: $net_qdisc"
+}
+
 # 菜单选项
 menu() {
+    check_status
     echo "请选择优化方案:"
     echo "1) 启用优化方案 bbr+fq"
     echo "2) 启用优化方案 bbr+fq_pie"

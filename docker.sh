@@ -29,6 +29,12 @@ select_container() {
     if [ ${#containers[@]} -eq 0 ]; then
         echo "没有找到容器。"
         return 1
+    elif [ ${#containers[@]} -eq 3 ]; then
+        selected_container=${containers[0]}
+        selected_container_name=${containers[1]}
+        selected_container_image=${containers[2]}
+        echo "自动选中唯一的容器: ID: $selected_container 名称: $selected_container_name 镜像: $selected_container_image"
+        return 0
     else
         echo "所有容器："
         for ((i=0; i<${#containers[@]}; i+=3)); do

@@ -78,6 +78,7 @@ EOF
     fi
 }
 
+# 清理 sysctl 配置
 clear_sysctl() {
     echo "" > /etc/sysctl.conf
     sysctl -p
@@ -88,19 +89,20 @@ clear_sysctl() {
     fi
 }
 
+# 菜单选项
 menu() {
     echo "请选择优化方案:"
     local support_bbr3=$(check_kernel_for_bbr3)
     if [[ $support_bbr3 -eq 1 ]]; then
         echo "1) 启用优化方案 bbr+fq"
-        echo "2) 启用优化方案 bbr+fq-pie"
+        echo "2) 启用优化方案 bbr+fq_pie"
         echo "3) 启用优化方案 bbr+cake"
         echo "4) 启用优化方案 bbr3+fq"
-        echo "5) 启用优化方案 bbr3+fq-pie"
+        echo "5) 启用优化方案 bbr3+fq_pie"
         echo "6) 启用优化方案 bbr3+cake"
     else
         echo "1) 启用优化方案 bbr+fq"
-        echo "2) 启用优化方案 bbr+fq-pie"
+        echo "2) 启用优化方案 bbr+fq_pie"
         echo "3) 启用优化方案 bbr+cake"
     fi
     echo "7) 清理优化"
@@ -111,7 +113,7 @@ menu() {
             apply_sysctl "bbr" "fq"
             ;;
         2)
-            apply_sysctl "bbr" "fq-pie"
+            apply_sysctl "bbr" "fq_pie"
             ;;
         3)
             apply_sysctl "bbr" "cake"
@@ -120,7 +122,7 @@ menu() {
             [[ $support_bbr3 -eq 1 ]] && apply_sysctl "bbr3" "fq"
             ;;
         5)
-            [[ $support_bbr3 -eq 1 ]] && apply_sysctl "bbr3" "fq-pie"
+            [[ $support_bbr3 -eq 1 ]] && apply_sysctl "bbr3" "fq_pie"
             ;;
         6)
             [[ $support_bbr3 -eq 1 ]] && apply_sysctl "bbr3" "cake"

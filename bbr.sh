@@ -44,11 +44,15 @@ net.core.default_qdisc = $qdisc
 net.core.optmem_max = 65536
 
 # TCP配置
-# 开启 SYN 洪水攻击保护 禁用syncookies可以避免不必要的计算开销。
-# 使用syncookies会导致一些TCP选项（如窗口缩放、选择性确认等）不可用。
+# 禁用syncookies 洪水攻击保护 可以避免不必要的计算开销。
+# 使用syncookies 会导致一些TCP选项（如窗口缩放、选择性确认等）不可用。
 net.ipv4.tcp_syncookies = 0
 # 允许复用 TIME-WAIT sockets 用于新的 TCP 连接
 net.ipv4.tcp_tw_reuse = 1
+# 禁用 TCP 时间戳
+net.ipv4.tcp_timestamps = 0
+# 禁用 TCP 时间戳回收
+net.ipv4.tcp_tw_recycle = 0
 # 设置 TCP 接收缓冲区
 net.ipv4.tcp_rmem = 4096 87380 $((64 * 1024 * 1024))
 # 设置 TCP 发送缓冲区

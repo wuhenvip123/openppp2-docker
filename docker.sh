@@ -58,6 +58,7 @@ select_container() {
 
 # 显示操作菜单
 while true; do
+    clear
     if [ -n "$selected_container" ]; then
         echo "当前选中的容器: ID: $selected_container 名称: $selected_container_name 镜像: $selected_container_image"
     else
@@ -78,6 +79,7 @@ while true; do
         echo "请先选择一个容器。"
         select_container
         if [[ $? -ne 0 ]]; then
+            read -p "按任意键继续..."
             continue
         fi
     fi
@@ -85,30 +87,60 @@ while true; do
     case $choice in
         1)
             select_container
+            if [[ $? -eq 0 ]]; then
+                echo "容器选择成功。"
+            else
+                echo "容器选择失败。"
+            fi
             ;;
         2)
             docker start $selected_container
+            if [[ $? -eq 0 ]]; then
+                echo "容器启动成功。"
+            else
+                echo "容器启动失败。"
+            fi
             ;;
         3)
             docker stop $selected_container
+            if [[ $? -eq 0 ]]; then
+                echo "容器停止成功。"
+            else
+                echo "容器停止失败。"
+            fi
             ;;
         4)
             docker restart $selected_container
+            if [[ $? -eq 0 ]]; then
+                echo "容器重启成功。"
+            else
+                echo "容器重启失败。"
+            fi
             ;;
         5)
             read -p "输入要更新的容器镜像名称：" image_name
             docker pull $image_name
             if [ $? -eq 0 ]; then
-                echo "重新创建使用新镜像的容器（注意：请根据实际情况修改启动参数）："
+                echo "镜像更新成功。"
                 docker stop $selected_container
                 docker rm $selected_container
                 docker run -d --name $selected_container_name $image_name
+                if [[ $? -eq 0 ]]; then
+                    echo "容器重新创建成功。"
+                else
+                    echo "容器重新创建失败。"
+                fi
             else
                 echo "镜像更新失败，请检查镜像名称或网络连接。"
             fi
             ;;
         6)
             docker image prune -f
+            if [[ $? -eq 0 ]]; then
+                echo "无用镜像清理成功。"
+            else
+                echo "无用镜像清理失败。"
+            fi
             ;;
         7)
             echo "退出脚本。"
@@ -118,4 +150,5 @@ while true; do
             echo "无效的选择，请重新输入。"
             ;;
     esac
+    read -p "按任意键返回菜单..."
 done

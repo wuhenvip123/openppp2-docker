@@ -4,7 +4,7 @@
 check_and_load_module() {
     local qdisc=$1
     if ! sysctl net.core.default_qdisc | grep -w $qdisc; then
-        echo "尝试加载 $qdisc 模块..."
+        echo "尝试使用 $qdisc 队列规则..."
         if ! lsmod | grep -w "$qdisc"; then
             modprobe $qdisc 2>/dev/null
         fi

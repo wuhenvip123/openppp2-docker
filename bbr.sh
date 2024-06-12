@@ -5,14 +5,16 @@ apply_sysctl() {
     local congestion_control=$1
     local qdisc=$2
 
-    # 先清除现有配置
+    # 清屏、清除现有配置
+    clear
+    rm -f /etc/sysctl.d/*.conf
+    rm -f /usr/lib/sysctl.d/*.conf
     clear_sysctl_conf
 
     # 写入新的配置
     write_sysctl_conf $congestion_control $qdisc
 
     # 应用系统配置
-    clear
     sysctl -p
     sysctl --system
 
@@ -28,7 +30,7 @@ apply_sysctl() {
 
 # 清空 sysctl 配置，不弹出提示
 clear_sysctl_conf() {
-    echo "" > /etc/sysctl.conf
+    cat /dev/null >/etc/sysctl.conf
 }
 
 # 清理 sysctl 配置，不提示重启
@@ -74,6 +76,38 @@ get_available_congestion_controls() {
 
 # 菜单选项
 menu() {
+    echo "============================"
+    echo "  系统优化菜单  "
+    echo "============================"
+    echo "1. 启用优化"
+    echo "2. 清理优化"
+    echo "3. 显示系统信息"
+    echo "4. 退出"
+    echo "============================"
+    read -p "请选择一个选项: " choice
+    case $choice in
+        1)
+            optimize_system
+            ;;
+        2)
+            clear_sysctl
+            echo "系统优化已清理。"
+            ;;
+        3)
+            check_status
+            ;;
+        4)
+            exit 0
+            ;;
+        *)
+            echo "无效选项，请重新选择。"
+            menu
+            ;;
+    esac
+}
+
+# 优化系统
+optimize_system() {
     check_status
 
     local available_congestion_controls=$(get_available_congestion_controls)
@@ -169,4 +203,5 @@ net.core.default_qdisc = $qdisc
 EOF
 }
 
+# 启动菜单
 menu

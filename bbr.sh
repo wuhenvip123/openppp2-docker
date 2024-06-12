@@ -68,7 +68,7 @@ check_status() {
 
 # 获取可用的拥塞控制算法
 get_available_congestion_controls() {
-    sysctl net.ipv4.tcp_available_congestion_control | awk -F "=" '{print $2}' | tr -d ' ' | tr ' ' '\n'
+    sysctl net.ipv4.tcp_available_congestion_control | awk -F "=" '{print $2}' | tr ' ' '\n'
 }
 
 # 菜单选项

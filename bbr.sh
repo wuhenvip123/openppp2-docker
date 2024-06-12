@@ -5,7 +5,9 @@ check_and_load_module() {
     local qdisc=$1
     if ! sysctl net.ipv4.tcp_available_congestion_control | grep -qw $qdisc; then
         echo "尝试加载 $qdisc 模块..."
-        modprobe tcp_$qdisc 2>/dev/null
+        if ! lsmod | grep -qw "tcp_$qdisc"; then
+            modprobe tcp_$qdisc 2>/dev/null
+        fi
         if ! sysctl net.ipv4.tcp_available_congestion_control | grep -qw $qdisc; then
             echo "错误: 拥塞控制算法 $qdisc 不可用。"
             return 1
@@ -18,7 +20,12 @@ check_and_load_module() {
 # 应用 sysctl 配置
 apply_sysctl() {
     local qdisc=$1
-    check_and_load_module
+    check_and_load_module $qdisc
+    if [ $? -ne 0 ]; then
+        echo "无法加载 $qdisc 模块，退出。"
+        return 1
+    fi
+
     # 先清除现有配置
     clear_sysctl_conf
 
@@ -109,13 +116,13 @@ menu() {
     read -p "输入选项: " option
     case $option in
         1)
-            apply_sysctl "fq"
+            apply_sysctl "bbr" && apply_sysctl "fq"
             ;;
         2)
-            apply_sysctl "fq_pie"
+            apply_sysctl "bbr" && apply_sysctl "fq_pie"
             ;;
         3)
-            apply_sysctl "cake"
+            apply_sysctl "bbr" && apply_sysctl "cake"
             ;;
         4)
             clear_sysctl

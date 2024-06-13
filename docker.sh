@@ -22,21 +22,22 @@ fi
 
 # 获取容器列表并选择容器
 select_container() {
-    containers=($(docker ps -a --format "{{.ID}} {{.Names}} {{.Image}}"))
+    containers=($(docker ps -a --format "{{.ID}} {{.Names}} {{.Image}} {{.Status}}"))
     if [ ${#containers[@]} -eq 0 ]; then
         echo "没有找到容器。"
         return 1
     fi
     echo "所有容器："
-    for ((i=0; i<${#containers[@]}; i+=3)); do
-        echo "$((i/3+1)). ID: ${containers[i]} 名称: ${containers[i+1]} 镜像: ${containers[i+2]}"
+    for ((i=0; i<${#containers[@]}; i+=4)); do
+        echo "$((i/4+1)). ID: ${containers[i]} 名称: ${containers[i+1]} 镜像: ${containers[i+2]} 状态: ${containers[i+3]}"
     done
     read -p "输入要选择的容器序号：" container_index
-    if [[ $container_index =~ ^[0-9]+$ ]] && [ $container_index -gt 0 ] && [ $container_index -le $(( ${#containers[@]} / 3 )) ]; then
-        selected_container=${containers[((container_index-1)*3)]}
-        selected_container_name=${containers[((container_index-1)*3+1)]}
-        selected_container_image=${containers[((container_index-1)*3+2)]}
-        echo "选中的容器: ID: $selected_container 名称: $selected_container_name 镜像: $selected_container_image"
+    if [[ $container_index =~ ^[0-9]+$ ]] && [ $container_index -gt 0 ] && [ $container_index -le $(( ${#containers[@]} / 4 )) ]; then
+        selected_container=${containers[((container_index-1)*4)]}
+        selected_container_name=${containers[((container_index-1)*4+1)]}
+        selected_container_image=${containers[((container_index-1)*4+2)]}
+        selected_container_status=${containers[((container_index-1)*4+3)]}
+        echo "选中的容器: ID: $selected_container 名称: $selected_container_name 镜像: $selected_container_image 状态: $selected_container_status"
         return 0
     else
         echo "无效的序号。"
@@ -97,9 +98,10 @@ while true; do
             docker pull $image_name
             if [ $? -eq 0 ]; then
                 echo "镜像更新成功。"
+                container_config=$(docker inspect $selected_container --format='{{json .HostConfig}}')
                 docker stop $selected_container
                 docker rm $selected_container
-                docker run -d --name $selected_container_name $image_name
+                docker run -d --name $selected_container_name --restart unless-stopped $(echo $container_config | jq -r 'to_entries[] | "--" + .key + "=" + (.value|tostring)') $image_name
                 if [[ $? -eq 0 ]]; then
                     echo "容器重新创建成功。"
                 else

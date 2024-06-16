@@ -277,6 +277,7 @@ function modify_config() {
             "dns": true,
             "quic": true,
             "icmp": true,
+            "aggligator": 0,
             "servers": ["${vps_ip}:${port}"]
         }
     },

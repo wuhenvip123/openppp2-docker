@@ -360,6 +360,7 @@ create_or_modify_ppp_config() {
             "dns": true,
             "quic": true,
             "icmp": true,
+            "aggligator": 0,
             "servers": ["${vps_ip}:${port}"]
         }
     },

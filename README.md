@@ -23,9 +23,9 @@ bash <(curl -Ls https://raw.githubusercontents.com/rebecca554owen/openppp2-docke
 
 # 自用 BBR 脚本
 ```
-bash <(curl -Ls https://raw.githubusercontent.com/rebecca554owen/openppp2-docker/main/bbr.sh)
+bash <(curl -Ls https://raw.githubusercontents.com/rebecca554owen/openppp2-docker/main/bbr.sh)
 ```
 # 检查流量超出自动关机脚本
 ```
-bash <(curl -Ls https://raw.githubusercontents.com/rebecca554owen/openppp2-docker/main/autocheck.sh)
+bash <(curl -Ls https://raw.githubusercontent.com/rebecca554owen/openppp2-docker/main/autocheck.sh)
 ```

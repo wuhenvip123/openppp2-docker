@@ -350,6 +350,7 @@ create_or_modify_ppp_config() {
         },
         "dns": {
             "timeout": 4,
+            "ttl": 60,
             "redirect": "0.0.0.0"
         },
         "listen": {

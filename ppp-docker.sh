@@ -418,6 +418,12 @@ create_or_modify_ppp_config() {
             "bind": "${lan_ip}",
             "port": ${port}
         },
+        "socks-proxy": {
+            "bind": "${lan_ip}",
+            "port": $((port + 1)),
+            "username": "admin",
+            "password": "password"
+        },
         "mappings": [
             {
                 "local-ip": "${lan_ip}",

@@ -264,7 +264,7 @@ services:
     volumes:
       - ./appsettings.json:/${ppp_name}/appsettings.json
     network_mode: host
-    command: ppp --mode=client --tun-mask=24 --tun-flash=yes --tun-ssmt=4/mq --tun-static=yes --tun-host=no
+    command: ppp --mode=client --tun-mask=24 --tun-promisc=yes --tun-flash=yes --tun-ssmt=4/mq --tun-static=yes --tun-host=no
 
 EOF
     

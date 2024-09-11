@@ -173,7 +173,7 @@ const proxies = [];
 
 // 定义 proxy-providers
 const proxyProviders = {
-  "yaml节点": {
+/*  "yaml节点": {
     "type": "file",
     "interval": 3600,
     "path": "C:\\Users\\Administrator\\Desktop\\yaml.yaml"
@@ -182,11 +182,11 @@ const proxyProviders = {
     "type": "file",
     "interval": 3600,
     "path": "C:\\Users\\Administrator\\Desktop\\url.yaml"
-  },
-  "ariport节点": {
+  },*/
+  "前置节点": {
     "type": "http",
     "interval": 3600,
-    "url": "https://apiv1.lemongg.top/api/v1/client/subscribe?token=afd2546cbf298e7c7e7819848561efa6",
+    "url": "https://raw.githubusercontent.com/rebecca554owen/openppp2-docker/main/yaml.yaml",
     "path": ".\\ariport.yaml"/*,
     "filter": "(?i)香港"
     */

@@ -1,0 +1,5 @@
+proxies:
+  - { name: 'openppp2-1', type: 'socks5', server: '192.168.1.10', port: 1081, username: 'admin', password: 'password' } 
+  - { name: 'openppp2-2', type: 'socks5', server: '192.168.1.10', port: 1082, username: 'admin', password: 'password' } 
+  - { name: 'openppp2-3', type: 'socks5', server: '192.168.1.10', port: 1083, username: 'admin', password: 'password' } 
+  - { name: 'openppp2-4', type: 'socks5', server: '192.168.1.10', port: 1084, username: 'admin', password: 'password' } 

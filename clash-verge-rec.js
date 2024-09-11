@@ -173,11 +173,11 @@ const proxies = [];
 
 // 定义 proxy-providers
 const proxyProviders = {
-/*  "yaml节点": {
+  "yaml节点": {
     "type": "file",
     "interval": 3600,
     "path": "C:\\Users\\Administrator\\Desktop\\yaml.yaml"
-  },
+  },/*
   "url节点": {
     "type": "file",
     "interval": 3600,

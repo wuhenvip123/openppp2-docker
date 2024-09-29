@@ -1,6 +1,6 @@
 proxies:
-  - { name: 'hks', type: 'socks5', server: '192.168.1.10', port: 1081, username: 'admin', password: 'password' } 
-  - { name: 'hks-2', type: 'socks5', server: '192.168.1.10', port: 1082, username: 'admin', password: 'password' } 
-  - { name: 'lightsail-sg', type: 'socks5', server: '192.168.1.10', port: 1084, username: 'admin', password: 'password' }
-  - { name: 'openvirt-v4', type: 'socks5', server: '192.168.1.10', port: 1083, username: 'admin', password: 'password' } 
-  - { name: 'openvirt-v6', type: 'socks5', server: '192.168.1.10', port: 1080, username: 'admin', password: 'password' } 
+  - { name: 'hks', type: 'socks5', server: '192.168.100.200', port: 1081, username: 'admin', password: 'password' } 
+  - { name: 'hks-2', type: 'socks5', server: '192.168.100.200', port: 1082, username: 'admin', password: 'password' } 
+  - { name: 'lightsail-sg', type: 'socks5', server: '192.168.100.200', port: 1084, username: 'admin', password: 'password' }
+  - { name: 'openvirt-v4', type: 'socks5', server: '192.168.100.200', port: 1083, username: 'admin', password: 'password' } 
+  - { name: 'openvirt-v6', type: 'socks5', server: '192.168.100.200', port: 1080, username: 'admin', password: 'password' } 

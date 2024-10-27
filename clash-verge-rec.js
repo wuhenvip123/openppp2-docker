@@ -1,10 +1,10 @@
 // 国内DNS服务器
 const domesticNameservers = [
-  "192.168.100.200"
+  "119.29.29.29"，
+  "180.76.76.76"
 ];
 // 国外DNS服务器
 const foreignNameservers = [
-  "192.168.100.200",
   "https://1.1.1.1/dns-query", // Cloudflare(主)
   "https://1.0.0.1/dns-query", // Cloudflare(备)
   'https://8.8.8.8/dns-query', // Google(主)
@@ -32,7 +32,7 @@ const dnsConfig = {
     // 微信快速登录检测失败
     "localhost.work.weixin.qq.com"
   ],
-  "default-nameserver": ["192.168.100.200","192.168.100.1"], //"tls://223.5.5.5:853","tls://1.12.12.12:853"
+  "default-nameserver": ["tls://223.5.5.5:853","tls://1.12.12.12:853"], //
   "nameserver": [...domesticNameservers],
   "proxy-server-nameserver": [...domesticNameservers],
   "nameserver-policy": {
@@ -173,18 +173,16 @@ const proxies = [];
 
 // 定义 proxy-providers
 const proxyProviders = {
-  /*
   "yaml节点": {
     "type": "file",
     "interval": 3600,
-    "path": "C:\\Users\\Administrator\\Desktop\\yaml.yaml"
+    "path": "D:\\yaml.yaml"
   },
-  */
   /*
   "url节点": {
     "type": "file",
     "interval": 3600,
-    "path": "C:\\Users\\Administrator\\Desktop\\url.yaml"
+    "path": "D:\\url.yaml"
   },*/
   "前置节点": {
     "type": "http",

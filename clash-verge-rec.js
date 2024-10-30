@@ -233,13 +233,13 @@ function main(config) {
       ...groupBaseOption,
       "name": "节点选择",
       "type": "select",
-      "proxies": ["relay", "前置", "延迟选优", "故障转移", "负载均衡(散列)", "负载均衡(轮询)", "HongKong", "TaiWan", "Singapore", "Japan", "America", "Others"],
+      "proxies": [ "前置节点", "延迟选优", "故障转移", "负载均衡(散列)", "负载均衡(轮询)","relay", "HongKong", "TaiWan", "Singapore", "Japan", "America", "Others"],
       "include-all": true,
       "icon": "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/adjust.svg"
     },
     {
       ...groupBaseOption,
-      "name": "前置",
+      "name": "前置节点",
       "type": "select",
       "proxies": ["延迟选优", "故障转移", "负载均衡(散列)", "负载均衡(轮询)", "HongKong", "TaiWan", "Singapore", "Japan", "America", "Others"],
       "include-all": true,
@@ -248,7 +248,7 @@ function main(config) {
     },
     {
       ...groupBaseOption,
-      "name": "出口",
+      "name": "出口节点",
       "type": "select",
       "proxies": [],
       "include-all": true,
@@ -258,7 +258,7 @@ function main(config) {
       ...groupBaseOption,
       "name": "relay",
       "type": "relay", //dialer-proxy
-      "proxies": ["前置", "出口"],
+      "proxies": ["前置节点", "出口节点"],
       "hidden": false,
       "icon": "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/adjust.svg"
     },

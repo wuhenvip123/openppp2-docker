@@ -3,7 +3,7 @@ const domesticNameservers = [
   "119.29.29.29",
   "180.76.76.76",
   "233.5.5.5"，
-  "233.6.6.6"，
+  "233.6.6.6"
 ];
 // 国外DNS服务器
 const foreignNameservers = [

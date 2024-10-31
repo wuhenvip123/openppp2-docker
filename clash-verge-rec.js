@@ -1,7 +1,9 @@
 // 国内DNS服务器
 const domesticNameservers = [
   "119.29.29.29",
-  "180.76.76.76"
+  "180.76.76.76",
+  "233.5.5.5"，
+  "233.6.6.6"，
 ];
 // 国外DNS服务器
 const foreignNameservers = [
@@ -32,7 +34,7 @@ const dnsConfig = {
     // 微信快速登录检测失败
     "localhost.work.weixin.qq.com"
   ],
-  "default-nameserver": ["tls://223.5.5.5:853","tls://1.12.12.12:853"], //
+  "default-nameserver": ["tls://223.5.5.5:853","tls://1.12.12.12:853"], // 
   "nameserver": [...domesticNameservers],
   "proxy-server-nameserver": [...domesticNameservers],
   "nameserver-policy": {
@@ -173,23 +175,17 @@ const proxies = [];
 
 // 定义 proxy-providers
 const proxyProviders = {
-  "yaml节点": {
+  "本地节点": {
     "type": "file",
     "interval": 3600,
-    "path": "D:\\yaml.yaml"
+    "path": "D:\\yaml.yaml" // 只能用 yaml格式 或者 url链接格式 节点
   },
-  /*
-  "url节点": {
-    "type": "file",
-    "interval": 3600,
-    "path": "D:\\url.yaml"
-  },*/
-  "前置节点": {
+  "远程节点": {
     "type": "http",
     "interval": 3600,
     "url": "https://raw.githubusercontent.com/rebecca554owen/openppp2-docker/main/yaml.yaml",
     "path": ".\\ariport.yaml"/*,
-    "filter": "(?i)香港"
+    "filter": "(?i)香港" 
     */
   }
 };

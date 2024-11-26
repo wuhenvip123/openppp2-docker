@@ -317,7 +317,7 @@ function modify_config() {
         "log": "/dev/null",
         "node": 1,
         "subnet": true,
-        "mapping": false,
+        "mapping": true,
         "backend": "",
         "backend-key": "HaEkTB55VcHovKtUPHmU9zn0NjFmC6tff"
     },

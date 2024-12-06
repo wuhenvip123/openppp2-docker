@@ -34,7 +34,7 @@ const dnsConfig = {
     // 微信快速登录检测失败
     "localhost.work.weixin.qq.com"
   ],
-  "default-nameserver": ["tls://223.5.5.5:853","tls://1.12.12.12:853"], // 
+  "default-nameserver": ["https://doh.pub/dns-query","https://dns.alidns.com/dns-query"], // 
   "nameserver": [...domesticNameservers],
   "proxy-server-nameserver": [...domesticNameservers],
   "nameserver-policy": {
@@ -139,7 +139,7 @@ const rules = [
   "DOMAIN-SUFFIX,googleapis.cn,节点选择", // Google服务
   "DOMAIN-SUFFIX,gstatic.com,节点选择", // Google静态资源
   "DOMAIN-SUFFIX,xn--ngstr-lra8j.com,节点选择", // Google Play下载服务
-  "DOMAIN,cm.cumslut.site,全局直连",
+  "DOMAIN,lan.qisuyun.xyz,全局直连",
   // Loyalsoldier 规则集
   "RULE-SET,applications,全局直连",
   "RULE-SET,reject,广告过滤",

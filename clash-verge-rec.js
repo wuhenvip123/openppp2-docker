@@ -20,7 +20,7 @@ const dnsConfig = {
   "use-system-hosts": false, // true or false
   "cache-algorithm": "arc",
   "enhanced-mode": "fake-ip",
-  "fake-ip-range": "198.18.0.1/16",
+  "fake-ip-range": "172.18.0.1/16",
   "fake-ip-filter": [
     // 本地主机/设备
     "+.lan",
@@ -34,7 +34,7 @@ const dnsConfig = {
     // 微信快速登录检测失败
     "localhost.work.weixin.qq.com"
   ],
-  "default-nameserver": ["https://doh.pub/dns-query","https://dns.alidns.com/dns-query"], // 
+  "default-nameserver": ["tls://1.12.12.12:853","119.29.29.29","tls://223.5.5.5:853","223.6.6.6"], //  只能使用纯 IP 地址，可使用加密 DNS
   "nameserver": [...domesticNameservers],
   "proxy-server-nameserver": [...domesticNameservers],
   "nameserver-policy": {

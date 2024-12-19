@@ -89,3 +89,99 @@
 2. Only by adding the --tun-static=yes , the UDP streams would be trasfered seperately.
 
 3. If the --block-quic=yes, no matter what the --tun-static is, there won't be any QUIC streams.
+
+
+快速上手
+
+服务端
+
+找一台服务器部署 OpenPPP2 服务端。
+
+连接到服务器。
+
+远程下载 OpenPPP2 压缩包。
+
+修改 OpenPPP2 压缩包中提供的 appsettings.json 模板文件。
+
+如果不需要将此服务器用作 SNIProxy 服务器，请删除 "cdn" 参数。
+
+如果您的服务器内存大于 256MB 且磁盘 4K 块 I/O 速度不理想，请删除 vmem 参数。
+
+如果您的服务器具有多个线程，最好将 concurrent 设置为线程数。
+
+设置服务器监听的 IP 地址。
+
+如果决定使用分配给服务器的所有 IP 地址，请将 ip.interface 和 ip.public 更改为 "::"。
+
+"ip": {
+    "interface": "::",
+    "public": "::"
+}
+content_copy
+download
+Use code with caution.
+Json
+
+如果决定只使用一个 IP 地址，请将 ip.interface 和 ip.public 更改为您想要使用的 IP 地址。
+
+在一些特殊情况下，公网 IP 由路由分配，您应该将 interface 更改为 "::"，并将 public 更改为要使用的 IP 地址。
+
+讨厌 IPv6？将所有 "::" 替换为 "0.0.0.0"。
+
+通过修改 tcp.listen.port 和 udp.listen.port 来设置 TCP 和 UDP 端口。
+
+删除整个 websocket 参数，因为 TCP 连接在面对审查时应该足够安全。（WebSocket 连接应在某些特定情况下使用）。
+
+设置一些服务器运行参数。
+
+server.log 是存储连接日志的路径。如果您不喜欢日志，请设置为 "/dev/null"。
+
+删除 server 代码块中的以下参数。
+
+"server": {
+   "log": "/dev/null"
+}
+content_copy
+download
+Use code with caution.
+Json
+
+使用 screen -S 在后台保持 OpenPPP2 运行。
+
+记住使用 chmod +x 添加执行权限。
+
+启动服务器。
+
+客户端配置
+
+如果客户端在您的 PC 上运行，或者客户端设备使用 eMMC 作为存储，请删除 vmem 参数。
+
+设置 udp.static.server。
+
+IP:PORT
+
+DOMAIN:PORT
+
+DOMAIN[IP]:PORT
+
+将 client.guid 设置为一个完全随机的值，请确保没有其他客户端与您使用的 GUID 相同。
+
+设置 client.server。
+
+ppp://IP:PORT
+
+ppp://DOMAIN:PORT
+
+ppp://DOMAIN[IP]:PORT
+
+删除 client.bandwidth 以释放 OpenPPP2 的全部速度。
+
+删除 mappings 参数。
+
+客户端 CLI 注意事项
+
+Windows 上的 TUN 网关应为 x.x.x.0。
+
+只有添加了 --tun-static=yes，UDP 流才会被单独传输。
+
+如果 --block-quic=yes，无论 --tun-static 为何值，都不会有任何 QUIC 流。

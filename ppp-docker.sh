@@ -4,6 +4,7 @@
 ppp_path="/etc/ppp"
 ppp_name="openppp2"
 
+# 安装步骤
 install_ppp() {
 pre_setup
 get_ip_info
@@ -89,6 +90,7 @@ setup_directory_and_name() {
     fi
     chmod 755 -R "${ppp_path}"
 }
+
 # 用户选择模式并配置
 select_mode_and_configure() {
     echo "请选择运行模式："
@@ -128,6 +130,7 @@ docker_compose_action() {
     fi
 }
 
+# 启动  ppp
 start_ppp() {
     echo "启动${ppp_name}..."
     docker_compose_action "up -d"
@@ -135,6 +138,7 @@ start_ppp() {
     before_show_menu
 }
 
+# 停止 ppp
 stop_ppp() {
     echo "停止${ppp_name}..."
     docker_compose_action "down"
@@ -142,6 +146,7 @@ stop_ppp() {
     before_show_menu
 }
 
+# 重启 ppp
 restart_ppp_update() {
     echo "重启${ppp_name}..."
     docker_compose_action "pull"
@@ -151,12 +156,14 @@ restart_ppp_update() {
     before_show_menu
 }
 
+# 查看 log
 show_ppp_log() {
     echo "正在获取${ppp_name}日志，正常启动则无日志"
     docker_compose_action "logs -f"
     before_show_menu
 }
 
+# 卸载 ppp
 uninstall_ppp() {
     echo "卸载${ppp_name}"
     if [[ -d "${ppp_path}" ]]; then

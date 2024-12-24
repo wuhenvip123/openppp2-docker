@@ -7,18 +7,20 @@ apply_sysctl() {
 
     # 清屏、清除现有配置
     clear
+    echo "正在清除现有配置..."
     clear_sysctl_conf
-
+    echo "清除完成，正在写入新的配置..."
     # 写入新的配置
     write_sysctl_conf $congestion_control $qdisc
-
+    echo "写入完成，正在应用系统配置..."
     # 应用系统配置
     sysctl --system
-
+    echo "系统配置应用完成，正在设置 ulimit 配置..."
     # 调用 ulimit 配置函数
     set_ulimit
+    echo "ulimit 配置设置完成，正在设置 pam_limits 配置..."
 
-    echo "优化配置已应用。建议重启以生效。是否现在重启? 回车默认重启"
+    echo "优化配置已应用。建议重启以生效。是否现在重启? 默认不重启"
     prompt_reboot
 }
 
@@ -34,7 +36,7 @@ clear_sysctl_conf() {
 clear_sysctl() {
     clear_sysctl_conf
     sysctl --system
-    echo "系统优化已清理。建议重启以生效。是否现在重启? 回车默认重启"
+    echo "系统优化已清理。建议重启以生效。是否现在重启? 默认不重启"
     prompt_reboot
 }
 
@@ -80,15 +82,19 @@ check_status() {
     echo "默认队列规则 (proc): $net_qdisc_proc"
 }
 
-# 获取可用的拥塞控制算法
+# 获取可用的拥塞控制算法，如果不存在bbr，则添加到最后一项
 get_available_congestion_controls() {
-    sysctl net.ipv4.tcp_available_congestion_control | awk -F "=" '{print $2}' | tr ' ' '\n'
+    local available_controls=$(sysctl net.ipv4.tcp_available_congestion_control | awk -F "=" '{print $2}' | tr ' ' '\n')
+    if ! echo "$available_controls" | grep -q "bbr"; then
+        available_controls="$available_controls bbr"
+    fi
+    echo "$available_controls"
 }
 
-# 提示重启
+# 提示重启，默认不重启
 prompt_reboot() {
     read -p "输入选项: (Y/n) " answer
-    if [ -z "$answer" ] || [[ ! "$answer" =~ ^[Nn][Oo]?$ ]]; then
+    if [[ "$answer" =~ ^[Yy][Ee][Ss]$ ]]; then
         reboot
     fi
 }
@@ -180,8 +186,9 @@ net.ipv4.tcp_rmem = 4096 87380 $((64 * 1024 * 1024))
 net.ipv4.tcp_wmem = 4096 65536 $((64 * 1024 * 1024))
 net.ipv4.tcp_fastopen = 3
 net.ipv4.tcp_window_scaling = 1
-net.ipv4.tcp_adv_win_scale = -2
-net.ipv4.tcp_mtu_probing = 1
+net.ipv4.tcp_adv_win_scale = 1
+net.ipv4.tcp_moderate_rcvbuf = 1
+net.ipv4.tcp_mtu_probing = 0
 net.ipv4.tcp_max_orphans = 262144
 net.ipv4.tcp_syn_retries = 3
 net.ipv4.tcp_synack_retries = 3
@@ -192,12 +199,19 @@ net.ipv4.tcp_fin_timeout = 10
 net.ipv4.tcp_abort_on_overflow = 1
 net.ipv4.tcp_max_syn_backlog = 8192
 net.ipv4.tcp_max_tw_buckets = 55000
+net.ipv4.tcp_no_metrics_save = 1
+net.ipv4.tcp_ecn = 0
+net.ipv4.tcp_frto = 0
+net.ipv4.tcp_rfc1337 = 0
+net.ipv4.tcp_sack = 1
+net.ipv4.tcp_fack = 1
 
 # 启用 TCP ECN
 net.ipv4.tcp_ecn = 1
 
 # IP 转发配置
 net.ipv4.ip_forward = 1
+net.ipv4.conf.all.route_localnet = 1
 net.ipv4.conf.all.forwarding = 1
 net.ipv4.conf.default.forwarding = 1
 

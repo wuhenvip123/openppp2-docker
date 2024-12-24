@@ -81,7 +81,7 @@ function install_ppp() {
 echo "请选择模式（默认为服务端）："
 echo "1) 服务端"
 echo "2) 客户端"
-read -p "输入选择 (1 或 2，默认为1): " mode_choice
+read -p "输入选择 (1 或 2，默认为服务端): " mode_choice
 
 # 设置默认选项
 mode_choice=${mode_choice:-1}
